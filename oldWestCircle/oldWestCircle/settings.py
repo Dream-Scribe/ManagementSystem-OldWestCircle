@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'user.apps.UserConfig',
 
 ]
 
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'oldWestCircle.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -68,29 +69,31 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'oldWestCircle.wsgi.application'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # 指定静态文件夹
+]
 
+WSGI_APPLICATION = 'oldWestCircle.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 
     # 数据库配置。如果使用 SQL Server，把下面注释掉，找相应配置替换即可
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',  # Django的引擎
-        'NAME': 'db1',  # 数据库名
-        'USER': 'root',  # 用户名
-        'PASSWORD': '123456',  # 密码
-        'HOST': '127.0.0.1',  # 数据库服务器地址
-        'PORT': 3306,  # 端口号（MySQL默认3306）
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',  # Django的引擎
+    #     'NAME': 'db1',  # 数据库名
+    #     'USER': 'root',  # 用户名
+    #     'PASSWORD': '123456',  # 密码
+    #     'HOST': '127.0.0.1',  # 数据库服务器地址
+    #     'PORT': 3306,  # 端口号（MySQL默认3306）
+    # }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
