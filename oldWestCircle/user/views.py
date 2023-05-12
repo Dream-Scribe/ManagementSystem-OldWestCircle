@@ -4,5 +4,6 @@ from django.shortcuts import render, HttpResponse
 
 
 def test(request):
-    return HttpResponse("this is a test")
+    # return HttpResponse("this is a test")
+    return render(request, "userTest/userTest.html")
 
