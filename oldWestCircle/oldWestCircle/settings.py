@@ -87,7 +87,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 
-    # 数据库配置。如果使用 SQL Server，把下面注释掉，找相应配置替换即可
+    # # MySQL 数据库配置。如果使用 SQL Server，把下面注释掉，找相应配置替换即可
     # 'default': {
     #     'ENGINE': 'django.db.backends.mysql',  # Django的引擎
     #     'NAME': 'db1',  # 数据库名
