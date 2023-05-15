@@ -20,6 +20,10 @@ from user import views
 
 urlpatterns = [
     # path('test/', views.test),
-    path('user/', include('user.urls')),
+    # path('user/', include('user.urls')),
     path('admin/', include('administrator.urls')),
+    path('index/', include('index.urls')),
+    path('teacher/', include('teacher.urls')),
+    path('student/', include('student.urls')),
+
 ]
