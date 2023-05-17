@@ -113,7 +113,3 @@ def select_teacher(request):
 
     return HttpResponse('this is 浏览教师信息')
 
-
-
-
-
