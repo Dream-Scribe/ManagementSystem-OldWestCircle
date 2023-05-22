@@ -137,7 +137,7 @@ def timetable(request):
     #     temp_data = []
     #     temp_json_data = []
     #
-    #     # 参数都为空, 查询全部申请信息
+    #     # 参数都为空, 查询全部信息
     #     if not any([temp_condition_1, temp_condition_2]):
     #         数据库相应表查询
     #         将结果数组合并
