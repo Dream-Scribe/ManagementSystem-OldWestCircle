@@ -2,7 +2,11 @@ from django.urls import path
 from teacher import views
 
 urlpatterns = [
-    path('homepage', views.homepage),
+    path('index', views.index),
+    path('courseTable',views.courseTable),
+    path('applyTable',views.applyTable),
+    path('studentTable',views.studentTable),
+    path('homepage',views.homepage),
     path('homework', views.homework_assign),
     path('bookingSelect', views.booking_select),
     path('bookingExamine', views.booking_examine),
