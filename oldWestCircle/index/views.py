@@ -1,4 +1,7 @@
 from django.shortcuts import render, HttpResponse
+from django.contrib.auth import authenticate, login
+
+from index.models import Student, Teacher
 
 
 # Create your views here.
@@ -14,10 +17,10 @@ def index(request):
     """
     # return render(request, 'temp_首页')
 
-    return render(request,'login.html')
+    return render(request, 'login.html')
 
 
-def login(request):
+def my_login(request):
     """
     登录
     @param request:
@@ -25,43 +28,39 @@ def login(request):
     """
     # POST请求, 业务实现
     if request.method == 'POST':
-        username = request.POST.get('temp_username')
+        phone_number = request.POST.get('temp_username')
         password = request.POST.get('temp_password')
         temp_type = request.POST.get('temp_type')
 
         # 验证登陆信息是否完整
-        if not all([username, password, temp_type]):
+        if not all([phone_number, password, temp_type]):
             return HttpResponse("error")
 
-        elif temp_type == 'stu':
-            # 验证用户是否存在，学生表取数据对比
-            if not StudentModel.objects.filter(username=temp_username).exists():
-                return HttpResponse('用户不存在')
-
-            # 判断密码是否正确，学生表取数据对比
-            user = Student.objects.get(username=temp_username)
-
-            if not check_password(password, user.password):
-                return HttpResponse('密码错误')
-
-            # 登录成功
-            设置cookie或者使用其他校验方式
-            return render(request, 'temp_学生登录成功界面')
-
-        elif 教师登录:
-            # 验证用户是否存在，教师表取数据对比
-            if not teacherModel.objects.filter(username=temp_username).exists():
-                return HttpResponse('用户不存在')
-
-            # 判断密码是否正确，教师表取数据对比
-            user = teacher.objects.get(username=temp_username)
-
-            if not check_password(password, user.password):
-                return HttpResponse('密码错误')
-
-            # 登录成功
-            设置cookie或者使用其他校验方式
-            return render(request, 'temp_教师登录成功界面')
+    # elif temp_type == 'student':
+        #     try:
+        #         student = Student.objects.get(phonenumber=phone_number, userpd=password)
+        #     except Student.DoesNotExist:
+        #         student = None
+        #
+        #     if student is not None:
+        #         # 登录成功
+        #         # login(request, student)  # 将学生标记为已登录状态
+        #
+        #         # return render(request, 'temp_学生登录成功界面')
+        #         return HttpResponse("成功")
+        #
+        # elif temp_type == 'teacher':
+        #     try:
+        #         teacher = Teacher.objects.get(phonenumber=phone_number, userpd=password)
+        #     except Teacher.DoesNotExist:
+        #         teacher = None
+        #
+        #     if teacher is not None:
+        #         # 登录成功
+        #         # login(request, teacher)  # 将教师标记为已登录状态
+        #
+        #         # return render(request, 'temp_教师登录成功界面')
+        #         return HttpResponse("成功")
 
     # return render(request, 'temp_登录页面')
     return HttpResponse("this is login")
@@ -107,3 +106,21 @@ def select_teacher(request):
 
     return HttpResponse('this is 浏览教师信息')
 
+
+def register(request):
+    if request.method == 'POST':
+        phonenumber = request.POST['temp_username']
+        userpd = request.POST['temp_password']
+
+        # 创建用户并保存到数据库
+        student = Student.objects.create_user(phonenumber=phonenumber, userpd=userpd)
+
+        # 使用authenticate()函数进行注册后的自动登录
+        user = authenticate(request, phonenumber=phonenumber, userpd=userpd)
+        if user is not None:
+            login(request, user)
+            return HttpResponse("成功")  # 注册成功后重定向到仪表板页面
+        else:
+            return HttpResponse("失败")  # 登录失败则重定向到登录页面
+    else:
+        return render(request, 'register.html')
