@@ -3,7 +3,7 @@ import json
 
 from django.shortcuts import render, HttpResponse
 from index.models import *
-
+from utils import *
 
 # Create your views here.
 def index(request):
@@ -214,11 +214,14 @@ def timetable(request):
                 course_time.append({'class_date': class_date, 'class_time': class_time})
             course_stime = time_data.courseid.coursestarttime.strftime('%Y-%m-%d %X')
             course_etime = time_data.courseid.courseendtime.strftime('%Y-%m-%d %X')
+            course_type = time_data.courseid.coursetype
+            course_type = translateTypeId2Type(course_type)
             result.append({
                 'course_name': course_name,
                 'course_time': course_time,
                 'course_start_time': course_stime,
-                'course_end_time': course_etime
+                'course_end_time': course_etime,
+                'course_type':course_type
             })
 
         # 将结果列表转换为JSON字符串
@@ -245,6 +248,7 @@ def course_start(request):
         temp_stime = request.POST.get('temp_start_time')
         temp_etime = request.POST.get('temp_end_time')
         temp_type = request.POST.get('temp_type')
+        temp_type = translateType2TypeId(temp_type)
         temp_name = request.POST.get('temp_name')
         temp_intro = request.POST.get('temp_intro')
         temp_state = 'reviewing'
@@ -255,7 +259,7 @@ def course_start(request):
         course = Course.objects.create(coursestarttime=temp_stime, courseendtime=temp_etime, coursetype=temp_type,
                                        coursename=temp_name, courseintro=temp_intro, coursestate=temp_state)
 
-        coursereview = Course.objects.create(courseid=course.courseid,reviewstate=temp_state)
+        coursereview = Coursereview.objects.create(courseid=course, adminid= Admin.objects.order_by('?').first(),reviewstate=temp_state)
         # print(course.courseid)
         # 加入相应表中
 
@@ -281,6 +285,7 @@ def course_change(request):
         temp_stime = request.POST.get('temp_start_time')
         temp_etime = request.POST.get('temp_end_time')
         temp_type = request.POST.get('temp_type')
+        temp_type = translateType2TypeId(temp_type)
         temp_name = request.POST.get('temp_name')
         temp_num = request.POST.get('temp_register_num')
         temp_favor = request.POST.get('temp_favor_degree')
@@ -337,34 +342,4 @@ def course_delete(request):
 
     return HttpResponse('删除课程')
 
-def translateDateId2Date(dateId):
-    if dateId == 1:
-        return "Monday"
-    elif dateId == 2:
-        return "Tuesday"
-    elif dateId ==3:
-        return 'Wednesday'
-    elif dateId ==4:
-        return 'Thursday'
-    elif dateId ==5:
-        return 'Friday'
-    elif dateId ==6:
-        return 'Saturday'
-    elif dateId ==7:
-        return 'Sunday'
 
-def translateDate2DateId(date):
-    if date == "Monday":
-        return 1
-    elif date == "Tuesday":
-        return 2
-    elif date == 'Wednesday':
-        return 3
-    elif date == 'Thursday':
-        return 4
-    elif date == 'Friday':
-        return 5
-    elif date == 'Saturday':
-        return 6
-    elif date == 'Sunday':
-        return 7
