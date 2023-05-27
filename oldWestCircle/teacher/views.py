@@ -5,9 +5,21 @@ import json
 
 
 # Create your views here.
-def test(request):
+def index(request):
     # return HttpResponse("this is a test")
-    return HttpResponse('this is teacher')
+    return render(request,'teacher/index.html')
+
+def courseTable(request):
+    return render(request,'teacher/courseTable.html')
+
+def applyTable(request):
+    return render(request,'teacher/applyTable.html')
+
+def studentTable(request):
+    return render(request,'teacher/studentTable.html')
+
+def homepage(request):
+    return render(request,'teacher/homepage.html')
 
 
 def homework_assign(request):
