@@ -92,11 +92,13 @@ def booking_select(request):
             for st_data in booking_data:
                 student_name = st_data.studentid.realname
                 teacher_name = st_data.teacherid.realname
-                time = st_data.booktime
+                bookdescription = st_data.bookdescription
+                time = str(st_data.booktime)
                 result.append({
                     'student_name': student_name,
                     'teacher_name': teacher_name,
-                    'time': time,
+                    'bookdescription': bookdescription,
+                    'time': time
 
                 })
 
