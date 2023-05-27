@@ -14,5 +14,6 @@ urlpatterns = [
     path('timetable', views.timetable),
     path('courseStart', views.course_start),
     path('courseChange', views.course_change),
+    path('courseDelete',views.course_delete)
 
 ]

@@ -313,6 +313,7 @@ def course_change(request):
 
     return HttpResponse('课程更改')
 
+
 def course_delete(request):
     """
     课程删除
@@ -325,12 +326,12 @@ def course_delete(request):
 
     # POST请求, 业务实现
     elif request.method == 'POST':
-        temp_cid = request.POST.get('temp_cid')
+        temp_cid = request.POST.get('temp_course_id')
 
         # 参数不全, 错误
         if not all([temp_cid]):
             return HttpResponse('参数不全')
-        Course.objects.get()
+        Course.objects.get(courseid=temp_cid).delete()
         # 返回成功信息。
         return HttpResponse('ok')
 
