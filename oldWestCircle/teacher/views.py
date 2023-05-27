@@ -44,9 +44,9 @@ def booking_select(request):
 
     # POST请求, 业务实现
     elif request.method == 'POST':
-        temp_condition_1 = request.POST.get('temp_condition_1')
-        temp_condition_2 = request.POST.get('temp_condition_2')
-
+        temp_tid = request.POST.get('temp_teacher_id')
+        temp_sid = request.POST.get('temp_student_id')
+        temp_time = request.POST.get('temp_time')
         # print(temp_condition_1)
         # print(temp_condition_2)
 
@@ -54,29 +54,37 @@ def booking_select(request):
         temp_json_data = []
 
         # 参数都为空, 查询全部申请信息
-        if not any([temp_condition_1]):
+        if not temp_tid:
+
             # 执行中间表的查询操作，获取数据
             booking_data = Booking.objects.all()
-
-            print(type(booking_data))
-
+        elif temp_sid and temp_time:
+            print('2')
+            booking_data = Booking.objects.filter(teacherid=temp_tid, studentid=temp_sid, bookingtime=temp_time)
+        elif temp_sid:
+            booking_data = Booking.objects.filter(teacherid=temp_tid, studentid=temp_sid)
+        elif temp_time:
+            booking_data = Booking.objects.filter(teacherid=temp_tid,
+                                                  bookingtime=temp_time)
+        else:
+            booking_data = Booking.objects.filter(teacherid=temp_tid)
             # 构建结果列表
-            result = []
-            for st_data in booking_data:
-                student_name = st_data.studentid.realname
-                teacher_name = st_data.teacherid.realname
-                bookdescription = st_data.bookdescription
-                time = st_data.booktime.strftime('%Y-%m-%d %X')
-                result.append({
-                    'student_name': student_name,
-                    'teacher_name': teacher_name,
-                    'bookdescription': bookdescription,
-                    'time': time
+        result = []
+        for st_data in booking_data:
+            student_name = st_data.studentid.realname
+            teacher_name = st_data.teacherid.realname
+            bookdescription = st_data.bookdescription
+            time = st_data.booktime.strftime('%Y-%m-%d %X')
+            result.append({
+            'student_name': student_name,
+            'teacher_name': teacher_name,
+            'bookdescription': bookdescription,
+            'time': time
 
-                })
+            })
 
-            # 将结果列表转换为JSON字符串
-            temp_json_data = json.dumps(result)
+        # 将结果列表转换为JSON字符串
+        temp_json_data = json.dumps(result)
 
         # else:
         #     多条件动态查询
@@ -379,6 +387,7 @@ def homework_change(request):
 
     return HttpResponse('课程修改')
 
+
 def homework_delete(request):
     """
     作业删除
@@ -401,3 +410,70 @@ def homework_delete(request):
         return HttpResponse('ok')
 
     return HttpResponse('删除作业')
+
+def homework_select(request):
+    """
+     查看发布的作业
+     @param request:
+     @return:
+     """
+    # GET请求, 进入作业发布
+    if request.method == 'GET':
+        return render(request, 'temp_作业发布')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_hid = request.POST.get('temp_homework_id')
+        temp_cid = request.POST.get('temp_class_id')
+        temp_tid = request.POST.get('temp_teacher_id')
+
+        # print(temp_condition_1)
+        # print(temp_condition_2)
+
+        # 列表存储查询结果
+        temp_json_data = []
+
+        # 参数都为空, 查询全部申请信息
+        if not temp_tid:
+            # 执行中间表的查询操作，获取数据
+            homework_data = Homework.objects.all()
+        elif temp_hid and temp_cid:
+            homework_data = Homework.objects.filter(teacherid=temp_tid,homeworkid=temp_hid,classid=temp_cid)
+        elif temp_hid:
+            homework_data = Homework.objects.filter(teacherid=temp_tid, homeworkid=temp_hid)
+        elif temp_cid:
+            homework_data = Homework.objects.filter(teacherid=temp_tid, classid=temp_cid)
+        else:
+            homework_data = Homework.objects.filter(teacherid=temp_tid)
+
+            # 构建结果列表
+        result = []
+        for hw_data in homework_data:
+            class_id = hw_data.classid
+
+            homework_id = hw_data.homeworkid
+
+            course_name = hw_data.classid.courseid.coursename
+            stime = hw_data.homeworkstarttime.strftime('%Y-%m-%d %X')
+            etime = hw_data.homeworkendtime.strftime('%Y-%m-%d %X')
+            content= hw_data.homeworkcontent
+            result.append({
+                'homework_id': homework_id,
+                'class_id': class_id.classid,
+                'course_name': course_name,
+                'start_time': stime,
+                'end_time': etime,
+                'content': content
+                })
+
+            # 将结果列表转换为JSON字符串
+        temp_json_data = json.dumps(result)
+
+        # else:
+        #     多条件动态查询
+        #     temp_data 保存
+        #     数组转为 json 格式
+
+    return HttpResponse(temp_json_data, content_type='application/json')
+
+    # return HttpResponse('预约查询')
