@@ -1,0 +1,53 @@
+{
+  "homeInfo": {
+    "title": "首页",
+    "href": "homepage"
+  },
+  "logoInfo": {
+    "title": "LAYUI MINI",
+    "image": "/static/images/logo.png",
+    "href": ""
+  },
+  "menuInfo": [
+    {
+      "title": "教师管理",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "主页",
+          "href": "homepage",
+          "icon": "fa fa-home",
+          "target": "_self"
+        },
+        {
+          "title": "学生管理",
+          "href": "",
+          "icon": "fa fa-window-maximize",
+          "target": "_self",
+          "child":[
+            {
+              "title": "学生申请审核",
+              "href": "applyTable",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "学生评价",
+              "href": "studentTable",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "课程管理",
+          "href": "courseTable",
+          "icon": "fa fa-gears",
+          "target": "_self"
+        }
+      ]
+    }
+  ]
+}

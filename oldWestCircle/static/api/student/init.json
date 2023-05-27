@@ -1,0 +1,48 @@
+{
+  "homeInfo": {
+    "title": "首页",
+    "href": "page/welcome-1.html?t=1"
+  },
+  "logoInfo": {
+    "title": "LAYUI MINI",
+    "image": "images/logo.png",
+    "href": ""
+  },
+  "menuInfo": [
+    {
+      "title": "学生页面",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "主页",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self"
+        },
+        {
+          "title": "课程查看",
+          "href": "page/menu.html",
+          "icon": "fa fa-window-maximize",
+          "target": "_self",
+          "child": [
+            {
+              "title": "所有课程",
+              "href": "",
+              "icon": "fa fa-list-alt",
+              "target": "_self"
+            },
+            {
+              "title": "自己课程",
+              "href": "",
+              "icon": "fa fa-list-alt",
+              "target": "_self"
+            }
+          ]
+
+        }
+      ]
+    }
+  ]
+}
