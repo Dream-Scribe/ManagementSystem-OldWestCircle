@@ -17,25 +17,25 @@
       "child": [
         {
           "title": "主页",
-          "href": "",
+          "href": "homepage",
           "icon": "fa fa-home",
           "target": "_self"
         },
         {
           "title": "课程查看",
-          "href": "page/menu.html",
+          "href": "",
           "icon": "fa fa-window-maximize",
           "target": "_self",
           "child": [
             {
               "title": "所有课程",
-              "href": "",
+              "href": "AllCourseTable",
               "icon": "fa fa-list-alt",
               "target": "_self"
             },
             {
               "title": "自己课程",
-              "href": "",
+              "href": "MyCourseTable",
               "icon": "fa fa-list-alt",
               "target": "_self"
             }

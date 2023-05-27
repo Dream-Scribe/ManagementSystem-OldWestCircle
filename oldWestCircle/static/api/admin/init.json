@@ -17,13 +17,13 @@
       "child": [
         {
           "title": "用户管理",
-          "href": "",
+          "href": "UserManageTable",
           "icon": "fa fa-meetup",
-          "target": ""
+          "target": "_self"
         },
         {
           "title": "内容发布",
-          "href": "",
+          "href": "ContentPublishTable",
           "icon": "fa fa-superpowers",
           "target": "_self"
         }

@@ -2,12 +2,24 @@ from django.shortcuts import render, HttpResponse
 
 
 # Create your views here.
-def test(request):
-    # return HttpResponse("this is a test")
-    return render(request, "studentTest/studentTest.html")
+def index(request):
+    return render(request,'student/index.html')
+
+def AllCourseTable(request):
+    return render(request,'student/AllCourseTable.html')
+
+def MyCourseTable(request):
+    return render(request,'student/MyCourseTable')
 
 def homepage(request):
-    return render(request, 'student/index.html')
+    return render(request,'student/homepage.html')
+def admin(request):
+    return render(request,'admin/index.html')
+def ContentPublishTable(request):
+    return render(request,'admin/ContentPublishTable.html')
+def UserManageTable(request):
+    return render(request,'admin/UserManageTable.html')
+
 
 def sign_up_activity(request):
     """
