@@ -2,7 +2,7 @@ from django.utils import timezone
 import json
 
 from django.shortcuts import render, HttpResponse
-from index.models import Homework, Booking, Teachertostudentcomment, Teach, Class, Student, Teacher
+from index.models import *
 
 
 # Create your views here.
@@ -127,18 +127,18 @@ def booking_examine(request):
     """
     # POST请求, 业务实现
     if request.method == 'POST':
-        temp_t_id = request.POST.get('temp_name')
-        temp_s_id = request.POST.get('temp_sname')
+        temp_tid = request.POST.get('temp_tid')
+        temp_sid = request.POST.get('temp_sid')
         temp_choose = request.POST.get('temp_choose')
 
-        # # 参数不全, 错误
-        # if not all([temp_name, temp_time]):
-        #     return HttpResponse('参数不全')
+        # 参数不全, 错误
+        if not all([temp_sid, temp_tid]):
+            return HttpResponse('参数不全')
 
-        if temp_choose == 1:
-            Booking.objects.filter(studentid=temp_s_id, teacherid=temp_t_id).update(booksuccess=temp_choose)
+        if temp_choose == '1':
+            Booking.objects.filter(studentid=temp_sid, teacherid=temp_tid).update(booksuccess=1)
         else:
-            Booking.objects.filter(studentid=temp_s_id, teacherid=temp_t_id).update(booksuccess=0)
+            Booking.objects.filter(studentid=temp_sid, teacherid=temp_tid).update(booksuccess=0)
 
         return HttpResponse('ok')
 
@@ -159,9 +159,9 @@ def evaluate(request):
         temp_star = request.POST.get('temp_star')
         time = timezone.now()
 
-        # # 参数不全, 错误
-        # if not all([temp_name, temp_time]):
-        #     return HttpResponse('参数不全')
+        #  参数不全, 错误
+        if not all([temp_studentid, temp_tid]):
+            return HttpResponse('参数不全')
 
         # 添加数据到相应表
         Teachertostudentcomment.objects.create(
@@ -189,39 +189,40 @@ def timetable(request):
 
     # POST请求, 业务实现
     elif request.method == 'POST':
-        temp_condition_1 = request.POST.get('temp_condition_1')
-        temp_condition_2 = request.POST.get('temp_condition_2')
-        temp_teacherid = request.POST.get('temp_condition_2')
+        temp_tid = request.POST.get('temp_tid')
 
         # 列表存储查询结果
         temp_json_data = []
 
         # 参数都为空, 查询全部信息
-        if not any([temp_condition_1, temp_condition_2]):
+        if not temp_tid:
             # 执行中间表的查询操作，获取数据
             timetable_data = Teach.objects.all()
+        else:
+            timetable_data = Teach.objects.filter(teacherid=temp_tid)
 
-            # 构建结果列表
-            result = []
-            for time_data in timetable_data:
-                course_name = time_data.courseid.coursename
-                class_set = Class.objects.filter(courseid=time_data.courseid)
-                course_time = []
-                for class_data in class_set:
-                    class_date = class_data.classdate
-                    class_time = class_data.classtime
-                    course_time.append({'class_date': class_date, 'class_time': class_time})
-                course_stime = time_data.courseid.coursestarttime.strftime('%Y-%m-%d %X')
-                course_etime = time_data.courseid.courseendtime.strftime('%Y-%m-%d %X')
-                result.append({
-                    'course_name': course_name,
-                    'course_time': course_time,
-                    'course_start_time': course_stime,
-                    'course_end_time': course_etime
-                })
+        # 构建结果列表
+        result = []
+        for time_data in timetable_data:
+            course_name = time_data.courseid.coursename
+            class_set = Class.objects.filter(courseid=time_data.courseid)
+            course_time = []
+            for class_data in class_set:
+                class_date = class_data.classdate
+                class_date = translateDateId2Date(class_date)
+                class_time = class_data.classtime
+                course_time.append({'class_date': class_date, 'class_time': class_time})
+            course_stime = time_data.courseid.coursestarttime.strftime('%Y-%m-%d %X')
+            course_etime = time_data.courseid.courseendtime.strftime('%Y-%m-%d %X')
+            result.append({
+                'course_name': course_name,
+                'course_time': course_time,
+                'course_start_time': course_stime,
+                'course_end_time': course_etime
+            })
 
-            # 将结果列表转换为JSON字符串
-            temp_json_data = json.dumps(result)
+        # 将结果列表转换为JSON字符串
+        temp_json_data = json.dumps(result)
 
         return HttpResponse(temp_json_data, content_type='application/json')
 
@@ -234,23 +235,32 @@ def course_start(request):
     @param request:
     @return:
     """
-    # # GET请求, 进入课程开设页面
-    # if request.method == 'GET':
-    #     return render(request, 'temp_课程开设')
-    #
-    # # POST请求, 业务实现
-    # elif request.method == 'POST':
-    #     temp_name = request.POST.get('temp_name')
-    #     temp_time = request.POST.get('temp_time')
-    #
-    #     # 参数不全, 错误
-    #     if not all([temp_name, temp_time]):
-    #         return HttpResponse('参数不全')
-    #
-    #     加入相应表中
-    #
-    #     返回成功信息。
-    #     return HttpResponse('ok')
+    # GET请求, 进入课程开设页面
+    if request.method == 'GET':
+        return render(request, 'temp_课程开设')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        #temp_cid = request.POST.get('temp_cid')
+        temp_stime = request.POST.get('temp_start_time')
+        temp_etime = request.POST.get('temp_end_time')
+        temp_type = request.POST.get('temp_type')
+        temp_name = request.POST.get('temp_name')
+        temp_intro = request.POST.get('temp_intro')
+        temp_state = 'reviewing'
+        # 参数不全, 错误
+        if not all([temp_type]):
+            return HttpResponse('参数不全')
+
+        course = Course.objects.create(coursestarttime=temp_stime, courseendtime=temp_etime, coursetype=temp_type,
+                                       coursename=temp_name, courseintro=temp_intro, coursestate=temp_state)
+
+        coursereview = Course.objects.create(courseid=course.courseid,reviewstate=temp_state)
+        # print(course.courseid)
+        # 加入相应表中
+
+        # 返回成功信息。
+        return HttpResponse('ok')
 
     return HttpResponse('开设课程')
 
@@ -261,22 +271,99 @@ def course_change(request):
     @param request:
     @return:
     """
-    # # GET请求, 进入课程开设页面
-    # if request.method == 'GET':
-    #     return render(request, 'temp_课程开设')
-    #
-    # # POST请求, 业务实现
-    # elif request.method == 'POST':
-    #     temp_name = request.POST.get('temp_name')
-    #     temp_time = request.POST.get('temp_time')
-    #
-    #     # 参数不全, 错误
-    #     if not all([temp_name, temp_time]):
-    #         return HttpResponse('参数不全')
-    #
-    #     更改到相应表中
-    #
-    #     返回成功信息。
-    #     return HttpResponse('ok')
+    # GET请求, 进入课程开设页面
+    if request.method == 'GET':
+        return render(request, 'temp_课程开设')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_cid = request.POST.get('temp_course_id')
+        temp_stime = request.POST.get('temp_start_time')
+        temp_etime = request.POST.get('temp_end_time')
+        temp_type = request.POST.get('temp_type')
+        temp_name = request.POST.get('temp_name')
+        temp_num = request.POST.get('temp_register_num')
+        temp_favor = request.POST.get('temp_favor_degree')
+        temp_intro = request.POST.get('temp_intro')
+
+        # 参数不全, 错误
+        if not all([temp_cid]):
+            return HttpResponse('参数不全')
+
+        # 更改到相应表中
+        course = Course.objects.filter(courseid=temp_cid)
+        if course is not None:
+            if temp_stime:
+                course.update(coursestarttime=temp_stime)
+            if temp_etime:
+                course.update(courseendtime=temp_etime)
+            if temp_type:
+                course.update(coursetype=temp_type)
+            if temp_name:
+                course.update(cousrename=temp_name)
+            if temp_num:
+                course.update(courseregisternum=temp_num)
+            if temp_favor:
+                course.update(coursefavordeg=temp_favor)
+            if temp_intro:
+                course.update(courseintro=temp_intro)
+
+        # 返回成功信息。
+        return HttpResponse('ok')
 
     return HttpResponse('课程更改')
+
+def course_delete(request):
+    """
+    课程删除
+    @param request:
+    @return:
+    """
+    # GET请求, 进入课程删除页面
+    if request.method == 'GET':
+        return render(request, 'temp_课程删除')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_cid = request.POST.get('temp_cid')
+
+        # 参数不全, 错误
+        if not all([temp_cid]):
+            return HttpResponse('参数不全')
+        Course.objects.get()
+        # 返回成功信息。
+        return HttpResponse('ok')
+
+    return HttpResponse('删除课程')
+
+def translateDateId2Date(dateId):
+    if dateId == 1:
+        return "Monday"
+    elif dateId == 2:
+        return "Tuesday"
+    elif dateId ==3:
+        return 'Wednesday'
+    elif dateId ==4:
+        return 'Thursday'
+    elif dateId ==5:
+        return 'Friday'
+    elif dateId ==6:
+        return 'Saturday'
+    elif dateId ==7:
+        return 'Sunday'
+
+def translateDate2DateId(date):
+    if date == "Monday":
+        return 1
+    elif date == "Tuesday":
+        return 2
+    elif date == 'Wednesday':
+        return 3
+    elif date == 'Thursday':
+        return 4
+    elif date == 'Friday':
+        return 5
+    elif date == 'Saturday':
+        return 6
+    elif date == 'Sunday':
+        return 7
