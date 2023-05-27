@@ -29,15 +29,15 @@ def login(request):
     #
     # # POST请求, 业务实现
     # elif request.method == 'POST':
-    #     temp_username = request.POST.get('temp_username')
-    #     temp_password = request.POST.get('temp_password')
+    #     username = request.POST.get('temp_username')
+    #     password = request.POST.get('temp_password')
     #     temp_type = request.POST.get('temp_type')
     #
     #     # 验证登陆信息是否完整
-    #     if not all([temp_username, temp_password]):
+    #     if not all([username, password]):
     #         return HttpResponse("error")
     #
-    #     elif 学生登录:
+    #     elif temp_type == 'stu':
     #         # 验证用户是否存在，学生表取数据对比
     #         if not StudentModel.objects.filter(username=temp_username).exists():
     #             return HttpResponse('用户不存在')
