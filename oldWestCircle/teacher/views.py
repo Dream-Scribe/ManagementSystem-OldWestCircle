@@ -1,25 +1,30 @@
-from django.shortcuts import render, HttpResponse
-from index.models import Homework, Booking, Teachertostudentcomment, Teach
-
+from django.utils import timezone
 import json
+
+from django.shortcuts import render, HttpResponse
+from index.models import Homework, Booking, Teachertostudentcomment, Teach, Class, Student, Teacher
 
 
 # Create your views here.
 def index(request):
     # return HttpResponse("this is a test")
-    return render(request,'teacher/index.html')
+    return render(request, 'teacher/index.html')
+
 
 def courseTable(request):
-    return render(request,'teacher/courseTable.html')
+    return render(request, 'teacher/courseTable.html')
+
 
 def applyTable(request):
-    return render(request,'teacher/applyTable.html')
+    return render(request, 'teacher/applyTable.html')
+
 
 def studentTable(request):
-    return render(request,'teacher/studentTable.html')
+    return render(request, 'teacher/studentTable.html')
+
 
 def homepage(request):
-    return render(request,'teacher/homepage.html')
+    return render(request, 'teacher/homepage.html')
 
 
 def homework_assign(request):
@@ -52,7 +57,6 @@ def homework_assign(request):
                                 teacherid=temp_teacher,
                                 homeworkstarttime=temp_start_time,
                                 homeworkendtime=temp_end_time)
-
 
         return HttpResponse('success')
 
@@ -93,7 +97,7 @@ def booking_select(request):
                 student_name = st_data.studentid.realname
                 teacher_name = st_data.teacherid.realname
                 bookdescription = st_data.bookdescription
-                time = str(st_data.booktime)
+                time = st_data.booktime.strftime('%Y-%m-%d %X')
                 result.append({
                     'student_name': student_name,
                     'teacher_name': teacher_name,
@@ -149,9 +153,11 @@ def evaluate(request):
     """
     # POST请求, 业务实现
     if request.method == 'POST':
-        temp_studentid = request.POST.get('temp_name')
-        temp_tid = request.POST.get('temp_time')
-        temp_comment = request.POST.get('temp_time')
+        temp_studentid = request.POST.get('temp_sid')
+        temp_tid = request.POST.get('temp_tid')
+        temp_comment = request.POST.get('temp_comment')
+        temp_star = request.POST.get('temp_star')
+        time = timezone.now()
 
         # # 参数不全, 错误
         # if not all([temp_name, temp_time]):
@@ -159,9 +165,11 @@ def evaluate(request):
 
         # 添加数据到相应表
         Teachertostudentcomment.objects.create(
-            studentid=temp_studentid,
-            teacherid=temp_tid,
-            t2scomment=temp_comment
+            studentid=Student.objects.filter(studentid=temp_studentid).first(),
+            teacherid=Teacher.objects.filter(teacherid=temp_tid).first(),
+            t2scomment=temp_comment,
+            t2sstar=temp_star,
+            t2scommenttime=time
         )
 
         return HttpResponse('ok')
@@ -191,14 +199,25 @@ def timetable(request):
         # 参数都为空, 查询全部信息
         if not any([temp_condition_1, temp_condition_2]):
             # 执行中间表的查询操作，获取数据
-            timetable_data = Teach.objects.filter(teacherid=temp_teacherid)
+            timetable_data = Teach.objects.all()
 
             # 构建结果列表
             result = []
             for time_data in timetable_data:
-                course_name = time_data.courseid.courseintro
+                course_name = time_data.courseid.coursename
+                class_set = Class.objects.filter(courseid=time_data.courseid)
+                course_time = []
+                for class_data in class_set:
+                    class_date = class_data.classdate
+                    class_time = class_data.classtime
+                    course_time.append({'class_date': class_date, 'class_time': class_time})
+                course_stime = time_data.courseid.coursestarttime.strftime('%Y-%m-%d %X')
+                course_etime = time_data.courseid.courseendtime.strftime('%Y-%m-%d %X')
                 result.append({
-                    'teacher_name': course_name
+                    'course_name': course_name,
+                    'course_time': course_time,
+                    'course_start_time': course_stime,
+                    'course_end_time': course_etime
                 })
 
             # 将结果列表转换为JSON字符串
