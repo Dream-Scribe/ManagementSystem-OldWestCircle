@@ -14,7 +14,7 @@ def index(request):
     """
     # return render(request, 'temp_首页')
 
-    return HttpResponse("this is 首页")
+    return render(request,'login.html')
 
 
 def login(request):

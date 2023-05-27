@@ -6,6 +6,8 @@ def test(request):
     # return HttpResponse("this is a test")
     return render(request, "studentTest/studentTest.html")
 
+def homepage(request):
+    return render(request, 'student/index.html')
 
 def sign_up_activity(request):
     """
