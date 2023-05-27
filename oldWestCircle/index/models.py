@@ -129,7 +129,8 @@ class Class(models.Model):
     classid = models.BigAutoField(db_column='classID', primary_key=True)  # Field name made lowercase.
     courseid = models.ForeignKey('Course', models.DO_NOTHING, db_column='courseID', to_field='courseid')  # Field name made lowercase.
     classstudentnum = models.IntegerField(db_column='classStudentNum')  # Field name made lowercase.
-    classtime = models.IntegerField(db_column='classTime', blank=True, null=True)  # Field name made lowercase.
+    classdate = models.IntegerField(db_column='classDate', blank=True, null=True)  # Field name made lowercase.
+    classtime = models.CharField(db_column='classTime', max_length=20, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False

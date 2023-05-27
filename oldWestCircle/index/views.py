@@ -23,53 +23,47 @@ def login(request):
     @param request:
     @return:
     """
-    # # GET请求, 进入登录页面
-    # if request.method == 'GET':
-    #     return render(request, 'temp_登录页面')
-    #
-    # # POST请求, 业务实现
-    # elif request.method == 'POST':
-    #     username = request.POST.get('temp_username')
-    #     password = request.POST.get('temp_password')
-    #     temp_type = request.POST.get('temp_type')
-    #
-    #     # 验证登陆信息是否完整
-    #     if not all([username, password]):
-    #         return HttpResponse("error")
-    #
-    #     elif temp_type == 'stu':
-    #         # 验证用户是否存在，学生表取数据对比
-    #         if not StudentModel.objects.filter(username=temp_username).exists():
-    #             return HttpResponse('用户不存在')
-    #
-    #         # 判断密码是否正确，学生表取数据对比
-    #         user = Student.objects.get(username=temp_username)
-    #
-    #         if not check_password(password, user.password):
-    #             return HttpResponse('密码错误')
-    #
-    #         # 登录成功
-    #         设置cookie或者使用其他校验方式
-    #         return render(request, 'temp_学生登录成功界面')
-    #
-    #     elif 教师登录:
-    #         # 验证用户是否存在，教师表取数据对比
-    #         if not teacherModel.objects.filter(username=temp_username).exists():
-    #             return HttpResponse('用户不存在')
-    #
-    #         # 判断密码是否正确，教师表取数据对比
-    #         user = teacher.objects.get(username=temp_username)
-    #
-    #         if not check_password(password, user.password):
-    #             return HttpResponse('密码错误')
-    #
-    #         # 登录成功
-    #         设置cookie或者使用其他校验方式
-    #         return render(request, 'temp_教师登录成功界面')
-    #
-    #     else:
-    #         return HttpResponse('error')
+    # POST请求, 业务实现
+    if request.method == 'POST':
+        username = request.POST.get('temp_username')
+        password = request.POST.get('temp_password')
+        temp_type = request.POST.get('temp_type')
 
+        # 验证登陆信息是否完整
+        if not all([username, password, temp_type]):
+            return HttpResponse("error")
+
+        elif temp_type == 'stu':
+            # 验证用户是否存在，学生表取数据对比
+            if not StudentModel.objects.filter(username=temp_username).exists():
+                return HttpResponse('用户不存在')
+
+            # 判断密码是否正确，学生表取数据对比
+            user = Student.objects.get(username=temp_username)
+
+            if not check_password(password, user.password):
+                return HttpResponse('密码错误')
+
+            # 登录成功
+            设置cookie或者使用其他校验方式
+            return render(request, 'temp_学生登录成功界面')
+
+        elif 教师登录:
+            # 验证用户是否存在，教师表取数据对比
+            if not teacherModel.objects.filter(username=temp_username).exists():
+                return HttpResponse('用户不存在')
+
+            # 判断密码是否正确，教师表取数据对比
+            user = teacher.objects.get(username=temp_username)
+
+            if not check_password(password, user.password):
+                return HttpResponse('密码错误')
+
+            # 登录成功
+            设置cookie或者使用其他校验方式
+            return render(request, 'temp_教师登录成功界面')
+
+    # return render(request, 'temp_登录页面')
     return HttpResponse("this is login")
 
 
