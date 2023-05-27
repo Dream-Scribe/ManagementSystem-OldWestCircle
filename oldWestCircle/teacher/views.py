@@ -69,18 +69,23 @@ def booking_select(request):
         temp_json_data = []
 
         # 参数都为空, 查询全部申请信息
-        if not any([temp_condition_1, temp_condition_2]):
+        if not any([temp_condition_1]):
             # 执行中间表的查询操作，获取数据
             booking_data = Booking.objects.all()
+
+            print(type(booking_data))
 
             # 构建结果列表
             result = []
             for st_data in booking_data:
                 student_name = st_data.studentid.realname
                 teacher_name = st_data.teacherid.realname
+                time = st_data.booktime
                 result.append({
                     'student_name': student_name,
-                    'teacher_name': teacher_name
+                    'teacher_name': teacher_name,
+                    'time': time,
+
                 })
 
             # 将结果列表转换为JSON字符串
