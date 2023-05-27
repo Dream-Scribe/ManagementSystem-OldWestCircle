@@ -76,10 +76,10 @@ def booking_select(request):
             bookdescription = st_data.bookdescription
             time = st_data.booktime.strftime('%Y-%m-%d %X')
             result.append({
-            'student_name': student_name,
-            'teacher_name': teacher_name,
-            'bookdescription': bookdescription,
-            'time': time
+                'student_name': student_name,
+                'teacher_name': teacher_name,
+                'bookdescription': bookdescription,
+                'time': time
 
             })
 
@@ -411,6 +411,7 @@ def homework_delete(request):
 
     return HttpResponse('删除作业')
 
+
 def homework_select(request):
     """
      查看发布的作业
@@ -438,7 +439,7 @@ def homework_select(request):
             # 执行中间表的查询操作，获取数据
             homework_data = Homework.objects.all()
         elif temp_hid and temp_cid:
-            homework_data = Homework.objects.filter(teacherid=temp_tid,homeworkid=temp_hid,classid=temp_cid)
+            homework_data = Homework.objects.filter(teacherid=temp_tid, homeworkid=temp_hid, classid=temp_cid)
         elif temp_hid:
             homework_data = Homework.objects.filter(teacherid=temp_tid, homeworkid=temp_hid)
         elif temp_cid:
@@ -456,7 +457,7 @@ def homework_select(request):
             course_name = hw_data.classid.courseid.coursename
             stime = hw_data.homeworkstarttime.strftime('%Y-%m-%d %X')
             etime = hw_data.homeworkendtime.strftime('%Y-%m-%d %X')
-            content= hw_data.homeworkcontent
+            content = hw_data.homeworkcontent
             result.append({
                 'homework_id': homework_id,
                 'class_id': class_id.classid,
@@ -464,7 +465,7 @@ def homework_select(request):
                 'start_time': stime,
                 'end_time': etime,
                 'content': content
-                })
+            })
 
             # 将结果列表转换为JSON字符串
         temp_json_data = json.dumps(result)
