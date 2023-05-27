@@ -2,9 +2,9 @@ from django.shortcuts import render, HttpResponse
 
 
 # Create your views here.
-def test(request):
+def homepage(request):
     # return HttpResponse("this is a test")
-    return HttpResponse('this is teacher')
+    return render(request,'teacher/index.html')
 
 
 def homework_assign(request):
