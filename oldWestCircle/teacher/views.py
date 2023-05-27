@@ -5,6 +5,7 @@ from django.shortcuts import render, HttpResponse
 from index.models import *
 from utils import *
 
+
 # Create your views here.
 def index(request):
     # return HttpResponse("this is a test")
@@ -27,40 +28,8 @@ def homepage(request):
     return render(request, 'teacher/homepage.html')
 
 
-def homework_assign(request):
-    """
-    作业发布
-    @param request:
-    @return:
-    """
-    # GET请求, 进入作业发布页面
-    if request.method == 'GET':
-        return render(request, 'temp_作业发布')
-
-    # POST请求, 业务实现
-    elif request.method == 'POST':
-        # temp_class = request.POST.get('temp_class')
-        # temp_teacher = request.POST.get('temp_teacher')
-        # temp_start_time = request.POST.get('temp_start_time')
-        # temp_end_time = request.POST.get('temp_end_time')
-        #
-        temp_class = 1
-        temp_teacher = 2
-        temp_start_time = 1
-        temp_end_time = 1
-
-        # # 参数不全, 错误
-        # if not all([temp_name, temp_time]):
-        #     return HttpResponse('参数不全')
-
-        Homework.objects.create(classid=temp_class,
-                                teacherid=temp_teacher,
-                                homeworkstarttime=temp_start_time,
-                                homeworkendtime=temp_end_time)
-
-        return HttpResponse('success')
-
-    return HttpResponse('作业发布')
+def homework(request):
+    return render(request, 'teacher/homework.html')
 
 
 def booking_select(request):
@@ -221,7 +190,7 @@ def timetable(request):
                 'course_time': course_time,
                 'course_start_time': course_stime,
                 'course_end_time': course_etime,
-                'course_type':course_type
+                'course_type': course_type
             })
 
         # 将结果列表转换为JSON字符串
@@ -244,7 +213,7 @@ def course_start(request):
 
     # POST请求, 业务实现
     elif request.method == 'POST':
-        #temp_cid = request.POST.get('temp_cid')
+        # temp_cid = request.POST.get('temp_cid')
         temp_stime = request.POST.get('temp_start_time')
         temp_etime = request.POST.get('temp_end_time')
         temp_type = request.POST.get('temp_type')
@@ -259,7 +228,8 @@ def course_start(request):
         course = Course.objects.create(coursestarttime=temp_stime, courseendtime=temp_etime, coursetype=temp_type,
                                        coursename=temp_name, courseintro=temp_intro, coursestate=temp_state)
 
-        coursereview = Coursereview.objects.create(courseid=course, adminid= Admin.objects.order_by('?').first(),reviewstate=temp_state)
+        coursereview = Coursereview.objects.create(courseid=course, adminid=Admin.objects.order_by('?').first(),
+                                                   reviewstate=temp_state)
         # print(course.courseid)
         # 加入相应表中
 
@@ -343,3 +313,91 @@ def course_delete(request):
     return HttpResponse('删除课程')
 
 
+def homework_assign(request):
+    """
+       作业发布
+       @param request:
+       @return:
+    """
+    # GET请求, 进入作业发布页面
+    if request.method == 'GET':
+        return render(request, 'temp_作业发布')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_cid = request.POST.get('temp_class_id')
+        temp_tid = request.POST.get('temp_teacher_id')
+        temp_stime = request.POST.get('temp_start_time')
+        temp_etime = request.POST.get('temp_end_time')
+        temp_content = request.POST.get('temp_content')
+
+        if not all([temp_cid, temp_tid]):
+            return HttpResponse('参数不全')
+
+        homework = Homework.objects.create(classid=Class.objects.get(classid=temp_cid),
+                                           teacherid=Teacher.objects.get(teacherid=temp_tid),
+                                           homeworkstarttime=temp_stime,
+                                           homeworkendtime=temp_etime, homeworkcontent=temp_content)
+        return HttpResponse('ok')
+
+    return HttpResponse('发布作业')
+
+
+def homework_change(request):
+    """
+           作业修改
+           @param request:
+           @return:
+        """
+    # GET请求, 进入作业发布页面
+    if request.method == 'GET':
+        return render(request, 'temp_作业发布')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_hid = request.POST.get('temp_homework_id')
+
+        temp_stime = request.POST.get('temp_start_time')
+        temp_etime = request.POST.get('temp_end_time')
+        temp_content = request.POST.get('temp_content')
+
+        if not all([temp_hid]):
+            return HttpResponse('参数不全')
+        print('1')
+        # 更改到相应表中
+        homework = Homework.objects.filter(homeworkid=temp_hid)
+        print('2')
+        if homework is not None:
+            if temp_stime:
+                homework.update(homeworkstarttime=temp_stime)
+            if temp_etime:
+                homework.update(homeworkendtime=temp_etime)
+            if temp_content:
+                homework.update(homeworkcontent=temp_content)
+            # 返回成功信息。
+        return HttpResponse('ok')
+
+    return HttpResponse('课程修改')
+
+def homework_delete(request):
+    """
+    作业删除
+    @param request:
+    @return:
+    """
+    # GET请求, 进入课程删除页面
+    if request.method == 'GET':
+        return render(request, 'temp_作业删除')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_hid = request.POST.get('temp_homework_id')
+
+        # 参数不全, 错误
+        if not all([temp_hid]):
+            return HttpResponse('参数不全')
+        Homework.objects.get(homeworkid=temp_hid).delete()
+        # 返回成功信息。
+        return HttpResponse('ok')
+
+    return HttpResponse('删除作业')
