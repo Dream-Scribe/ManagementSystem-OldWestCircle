@@ -6,6 +6,14 @@ from django.shortcuts import render, HttpResponse
 def admin_test(request):
     return HttpResponse("this is admin test")
 
+def admin(request):
+    return render(request,'admin/index.html')
+def ContentPublishTable(request):
+    return render(request,'admin/ContentPublishTable.html')
+def UserManageTable(request):
+    return render(request,'admin/UserManageTable.html')
+
+
 
 def publish_activity(request):
     """

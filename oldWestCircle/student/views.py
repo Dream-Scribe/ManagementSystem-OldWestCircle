@@ -13,13 +13,6 @@ def MyCourseTable(request):
 
 def homepage(request):
     return render(request,'student/homepage.html')
-def admin(request):
-    return render(request,'admin/index.html')
-def ContentPublishTable(request):
-    return render(request,'admin/ContentPublishTable.html')
-def UserManageTable(request):
-    return render(request,'admin/UserManageTable.html')
-
 
 def sign_up_activity(request):
     """

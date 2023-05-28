@@ -6,7 +6,6 @@ urlpatterns = [
     path('AllCourseTable',views.AllCourseTable),
     path('MyCourseTable',views.MyCourseTable),
     path('homepage', views.homepage),
-    path('admin', views.admin),
-    path('ContentPublishTable',views.ContentPublishTable),
-    path('UserManageTable',views.UserManageTable)
+    path('timetable', views.timetable),
+    path('learning_process',views.learning_process)
 ]
