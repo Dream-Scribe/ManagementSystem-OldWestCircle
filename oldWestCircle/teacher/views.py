@@ -74,7 +74,9 @@ def booking_select(request):
             student_name = st_data.studentid.realname
             teacher_name = st_data.teacherid.realname
             bookdescription = st_data.bookdescription
-            time = st_data.booktime.strftime('%Y-%m-%d %X')
+            time = st_data.booktime
+            if time:
+                time = time.strftime('%Y-%m-%d %X')
             result.append({
                 'student_name': student_name,
                 'teacher_name': teacher_name,
@@ -189,15 +191,19 @@ def timetable(request):
                 class_date = translateDateId2Date(class_date)
                 class_time = class_data.classtime
                 course_time.append({'class_date': class_date, 'class_time': class_time})
-            course_stime = time_data.courseid.coursestarttime.strftime('%Y-%m-%d %X')
-            course_etime = time_data.courseid.courseendtime.strftime('%Y-%m-%d %X')
+            stime = time_data.courseid.coursestarttime
+            if stime:
+                stime = stime.strftime('%Y-%m-%d %X')
+            etime = time_data.courseid.courseendtime
+            if etime:
+                etime = etime.strftime('%Y-%m-%d %X')
             course_type = time_data.courseid.coursetype
             course_type = translateTypeId2Type(course_type)
             result.append({
                 'course_name': course_name,
                 'course_time': course_time,
-                'course_start_time': course_stime,
-                'course_end_time': course_etime,
+                'course_start_time': stime,
+                'course_end_time': etime,
                 'course_type': course_type
             })
 
@@ -455,8 +461,12 @@ def homework_select(request):
             homework_id = hw_data.homeworkid
 
             course_name = hw_data.classid.courseid.coursename
-            stime = hw_data.homeworkstarttime.strftime('%Y-%m-%d %X')
+            stime = hw_data.homeworkstarttime
+            if stime:
+                stime = stime.strftime('%Y-%m-%d %X')
             etime = hw_data.homeworkendtime.strftime('%Y-%m-%d %X')
+            if etime:
+                etime = etime.strftime('%Y-%m-%d %X')
             content = hw_data.homeworkcontent
             result.append({
                 'homework_id': homework_id,
@@ -475,6 +485,134 @@ def homework_select(request):
         #     temp_data 保存
         #     数组转为 json 格式
 
-    return HttpResponse(temp_json_data, content_type='application/json')
+        return HttpResponse(temp_json_data, content_type='application/json')
 
     # return HttpResponse('预约查询')
+
+
+def activity_attend(request):
+    """
+         参加活动
+         @param request:
+         @return:
+    """
+    # GET请求, 进入活动参加
+    if request.method == 'GET':
+        return render(request, 'temp_活动参加')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_aid = request.POST.get('temp_activity_id')
+        temp_tid = request.POST.get('temp_activity_id')
+
+        if not all([temp_aid, temp_tid]):
+            return HttpResponse('参数不全')
+        elif temp_aid and temp_tid:
+            attend = TeacherAttend.objects.create(activityid=temp_aid, teacherid=temp_tid)
+            return HttpResponse('ok')
+
+    return HttpResponse('活动参加')
+
+
+def activity_cancel(request):
+    """
+         取消活动
+         @param request:
+         @return:
+    """
+    # GET请求, 进入活动取消
+    if request.method == 'GET':
+        return render(request, 'temp_活动取消')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_aid = request.POST.get('temp_activity_id')
+        temp_tid = request.POST.get('temp_activity_id')
+
+        if not all([temp_aid, temp_tid]):
+            return HttpResponse('参数不全')
+        elif temp_aid and temp_tid:
+            TeacherAttend.objects.get(activityid=temp_aid, teacherid=temp_tid).delete()
+
+            return HttpResponse('ok')
+
+    return HttpResponse('活动取消')
+
+
+def activity_show(request):
+    """
+             活动展示
+             @param request:
+             @return:
+    """
+    # GET请求, 进入活动展示
+    if request.method == 'GET':
+        return render(request, 'temp_活动展示')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_aid = request.POST.get('temp_activity_id')
+        temp_tid = request.POST.get('temp_teacher_id')
+
+        if temp_aid and temp_tid:
+            activities = [Teacherattend.objects.get(activityid=temp_aid, teacherid=temp_tid).activityid]
+        elif temp_tid:
+            activities = [x.activityid for x in Teacherattend.objects.filter(teacherid=temp_tid)]
+        else:
+            activities = Activity.objects.all()
+        result = []
+
+        for activity in activities:
+            activity_id = activity.activityid
+            activity_content = activity.activitycontent
+            activity_place = activity.activityplace
+            activity_stime = activity.activitystarttime
+            if activity_stime:
+                activity_stime = activity_stime.strftime('%Y-%m-%d %X')
+
+            activity_etime = activity.activityendtime
+            if activity_etime:
+                activity_etime = activity_etime.strftime('%Y-%m-%d %X')
+            result.append({
+                'activity_id': activity_id,
+                'content': activity_content,
+                'place': activity_place,
+                'start_time': activity_stime,
+                'end_time': activity_etime,
+            })
+
+        temp_json_data = json.dumps(result)
+
+        return HttpResponse(temp_json_data, content_type='application/json')
+
+
+def announcement_show(request):
+    """
+            公告展示
+            @param request:
+            @return:
+    """
+    # GET请求, 进入活动展示
+    if request.method == 'GET':
+        return render(request, 'temp_活动展示')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        announcements = Announcement.objects.all()
+        result = []
+
+        for announcement in announcements:
+            announcement_id = announcement.announceid
+            content = announcement.announcecontent
+            time = announcement.announcepublishtime
+            if time:
+                time = time.strftime('%Y-%m-%d %X')
+            result.append({
+                'announcement_id': announcement_id,
+                'content': content,
+                'publish_time': time
+            })
+
+        temp_json_data = json.dumps(result)
+
+        return HttpResponse(temp_json_data, content_type='application/json')

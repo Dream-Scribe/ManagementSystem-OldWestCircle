@@ -18,5 +18,9 @@ urlpatterns = [
     path('homeworkAssign', views.homework_assign),
     path('homeworkChange', views.homework_change),
     path('homeworkDelete', views.homework_delete),
-    path('homeworkSelect',views.homework_select)
+    path('homeworkSelect', views.homework_select),
+    path('activityShow', views.activity_show),
+    path('activityAttend', views.activity_attend),
+    path('activityCancel', views.activity_cancel),
+    path('announceShow', views.announcement_show)
 ]
