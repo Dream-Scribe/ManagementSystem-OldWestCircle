@@ -9,7 +9,7 @@ def AllCourseTable(request):
     return render(request,'student/AllCourseTable.html')
 
 def MyCourseTable(request):
-    return render(request,'student/MyCourseTable')
+    return render(request,'student/MyCourseTable.html')
 
 def homepage(request):
     return render(request,'student/homepage.html')

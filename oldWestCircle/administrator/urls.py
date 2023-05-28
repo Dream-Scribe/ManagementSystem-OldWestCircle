@@ -8,7 +8,7 @@ urlpatterns = [
     path('userSelect', views.user_select),
     path('userAdd', views.user_add),
     path('userDelete', views.user_delete),
-     path('admin', views.admin),
+    path('admin', views.admin),
     path('ContentPublishTable',views.ContentPublishTable),
     path('UserManageTable',views.UserManageTable),
 ]
