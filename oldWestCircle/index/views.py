@@ -75,13 +75,13 @@ def select_course(request):
 
         data = []
         count = len(course_data)
-        for cs_data in course_data:
+        for each_data in course_data:
             temp_data = {
-                'course_type': str(cs_data.coursetype),
-                'start_time': cs_data.coursestarttime.strftime('%Y-%m-%d %X'),
-                'end_time': cs_data.courseendtime.strftime('%Y-%m-%d %X'),
-                'course_intro': cs_data.courseintro,
-                'course_name': cs_data.coursename,
+                'course_type': str(each_data.coursetype),
+                'start_time': each_data.coursestarttime.strftime('%Y-%m-%d %X'),
+                'end_time': each_data.courseendtime.strftime('%Y-%m-%d %X'),
+                'course_intro': each_data.courseintro,
+                'course_name': each_data.coursename,
             }
             data.append(temp_data)
 

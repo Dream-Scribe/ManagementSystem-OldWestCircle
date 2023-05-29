@@ -1,5 +1,7 @@
+import json
+
 from django.shortcuts import render, HttpResponse
-from index.models import Activity, Admin
+from index.models import Activity, Admin, Announcement, Teacher
 
 
 # Create your views here.
@@ -46,8 +48,7 @@ def publish_activity(request):
             print(e)
             return HttpResponse('error')
 
-    # return render(request, 'temp_活动发布页面')
-    return HttpResponse('activity publish')
+    return render(request, 'temp_活动发布页面')
 
 
 def publish_announcement(request):
@@ -56,21 +57,26 @@ def publish_announcement(request):
     @param request:
     @return:
     """
-    # # GET请求, 进入发布页面
-    # if request.method == 'GET':
-    #     return render(request, 'temp_公告发布页面')
-    #
-    # # POST请求, 业务实现
-    # elif request.method == 'POST':
-    #     temp_name = request.POST.get('temp_name')
-    #     temp_time = request.POST.get('temp_time')
-    #
-    #     # 参数不全, 错误
-    #     if not all([temp_name, temp_time]):
-    #         return HttpResponse('参数不全')
-    #
-    #     将信息添加到数据库，公告表。并返回成功信息。
-    #     return HttpResponse('success')
+    # POST请求, 业务实现
+    if request.method == 'POST':
+        temp_aid = request.POST.get('temp_admin_id')
+        temp_content = request.POST.get('temp_content')
+        temp_time = request.POST.get('temp_time')
+
+        # 参数不全, 错误
+        if not all([temp_aid, temp_time, temp_content]):
+            return HttpResponse('参数不全')
+
+        # 将信息添加到数据库。并返回成功信息。
+        try:
+            Announcement.objects.create(adminid=Admin.objects.get(adminid=temp_aid),
+                                    announcecontent=temp_content,
+                                    announcepublishtime=temp_time)
+
+            return HttpResponse('success')
+        except Exception as e:
+            print(e)
+            return HttpResponse('error')
 
     return HttpResponse('announcement publish')
 
@@ -81,35 +87,38 @@ def user_select(request):
     @param request:
     @return:
     """
-    # # GET请求, 进入查询页面
-    # if request.method == 'GET':
-    #     return render(request, 'temp_用户查询页面')
-    #
-    # # POST请求, 业务实现
-    # elif request.method == 'POST':
-    #     temp_condition_1 = request.POST.get('temp_condition_1')
-    #     temp_condition_2 = request.POST.get('temp_condition_2')
-    #
-    #     # 列表存储查询结果
-    #     temp_data = []
-    #     temp_json_data = []
-    #
-    #     # 参数都为空, 全部查询
-    #     if not any([temp_condition_1, temp_condition_2]):
-    #         数据库查询，学生表
-    #         数据库查询，教师表
-    #         将结果数组合并
-    #         temp_data 保存
-    #         数组转为 json 格式
-    #
-    #     else:
-    #         多条件动态查询
-    #         temp_data 保存
-    #         数组转为 json 格式
-    #
-    #     return HttpResponse(temp_json_data, content_type='application/json')
+    # POST请求, 业务实现
+    if request.method == 'POST':
+        temp_condition_1 = request.POST.get('temp_condition_1')
+        temp_condition_2 = request.POST.get('temp_condition_2')
 
-    return HttpResponse("user select")
+        # 参数都为空, 全部查询
+        if not any([temp_condition_1, temp_condition_2]):
+            all_data = Teacher.objects.all()
+
+            data = []
+            count = len(all_data)
+            for each_data in all_data:
+                temp_data = {
+                    'teacher_ID': str(each_data.teacherid),
+                    'register_time': each_data.registertime.strftime('%Y-%m-%d %X'),
+                    'real_name': each_data.realname,
+                    'phone_number': each_data.phonenumber,
+                }
+                data.append(temp_data)
+
+            # 将结果列表转换为JSON字符串
+            json_data = {
+                'code': 0,
+                'msg': '',
+                'count': count,
+                'data': data
+            }
+            json_data = json.dumps(json_data)
+
+            return HttpResponse(json_data, content_type='application/json')
+
+    return render(request, 'temp_用户查询页面')
 
 
 def user_add(request):
@@ -118,42 +127,56 @@ def user_add(request):
     @param request:
     @return:
     """
-    # # GET请求, 进入用户添加页面
-    # if request.method == 'GET':
-    #     return render(request, 'temp_用户添加页面')
-    #
-    # # POST请求, 业务实现
-    # elif request.method == 'POST':
-    #     temp_name = request.POST.get('temp_name')
-    #     temp_time = request.POST.get('temp_time')
-    #
-    #     # 参数不全, 错误
-    #     if not all([temp_name, temp_time]):
-    #         return HttpResponse('参数不全')
-    #
-    #     将信息添加到数据库，教师表。并返回成功信息。
-    #     return HttpResponse('success')
+    # POST请求, 业务实现
+    if request.method == 'POST':
+        teacher_id = request.POST.get('temp_teacher_id')
+        register_time = request.POST.get('temp_register_time')
+        real_name = request.POST.get('temp_real_name')
+        phone_number = request.POST.get('temp_phone_number')
+        userpd = request.POST.get('temp_userpd')
+        teacher_field = int(request.POST.get('teacher_field'))
 
-    return HttpResponse("user add")
+        # 参数不全, 错误
+        if not all([teacher_id, real_name, phone_number, userpd]):
+            return HttpResponse('参数不全')
+
+        # 将信息添加到数据库。并返回成功信息。
+        try:
+            Teacher.objects.create(teacherid=int(teacher_id),
+                                   registertime=register_time,
+                                   realname=real_name,
+                                   phonenumber=phone_number,
+                                   userpd=userpd,
+                                   teacherfield=teacher_field)
+
+            return HttpResponse('success')
+        except Exception as e:
+            print(e)
+            return HttpResponse('error')
+
+    return render(request, 'temp_用户添加页面')
 
 
 def user_delete(request):
     """
-    用户删除
+    用户删除, 可在查询界面进行
     @param request:
     @return:
     """
-    # 用户删除, 可在查询界面进行
-    # # POST请求, 业务实现
-    # if request.method == 'POST':
-    #     temp_name = request.POST.get('temp_name')
-    #
-    #     # 参数不全, 错误
-    #     if not all([temp_name]):
-    #         return HttpResponse('参数不全')
-    #
-    #     从教师表根据条件删除。
-    #     return HttpResponse('success')
+    # POST请求, 业务实现
+    if request.method == 'POST':
+        temp_id = int(request.POST.get('temp_id'))
+
+        # 参数不全, 错误
+        if not all([temp_id]):
+            return HttpResponse('参数不全')
+
+        try:
+            Teacher.objects.get(teacherid=temp_id).delete()
+            return HttpResponse('success')
+        except Exception as e:
+            print(e)
+            return HttpResponse('error')
 
     return HttpResponse("user delete")
 
