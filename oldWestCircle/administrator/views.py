@@ -1,4 +1,6 @@
 from django.shortcuts import render, HttpResponse
+from index.models import Activity, Admin
+
 
 # Create your views here.
 
@@ -14,29 +16,37 @@ def UserManageTable(request):
     return render(request,'admin/UserManageTable.html')
 
 
-
 def publish_activity(request):
     """
     活动发布
     @param request:
     @return:
     """
-    # # GET请求, 进入发布页面
-    # if request.method == 'GET':
-    #     return render(request, 'temp_活动发布页面')
-    #
-    # # POST请求, 业务实现
-    # elif request.method == 'POST':
-    #     temp_name = request.POST.get('temp_name')
-    #     temp_time = request.POST.get('temp_time')
-    #
-    #     # 参数不全, 错误
-    #     if not all([temp_name, temp_time]):
-    #         return HttpResponse('参数不全')
-    #
-    #     将信息添加到数据库，活动表。并返回成功信息。
-    #     return HttpResponse('success')
+    # POST请求, 业务实现
+    if request.method == 'POST':
+        temp_aid = request.POST.get('temp_admin_id')
+        temp_stime = request.POST.get('temp_start_time')
+        temp_etime = request.POST.get('temp_end_time')
+        temp_content = request.POST.get('temp_content')
+        temp_place = request.POST.get('temp_place')
 
+        # 参数不全, 错误
+        if not all([temp_aid, temp_stime, temp_etime, temp_content, temp_place]):
+            return HttpResponse('参数不全')
+
+        # 将信息添加到数据库，活动表。并返回成功信息。
+        try:
+            Activity.objects.create(adminid=Admin.objects.get(adminid=temp_aid),
+                                    activitycontent=temp_content,
+                                    activitystarttime=temp_stime,
+                                    activityendtime=temp_etime,
+                                    activityplace=temp_place)
+            return HttpResponse('success')
+        except Exception as e:
+            print(e)
+            return HttpResponse('error')
+
+    # return render(request, 'temp_活动发布页面')
     return HttpResponse('activity publish')
 
 
