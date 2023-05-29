@@ -379,10 +379,10 @@ def homework_change(request):
 
         if not all([temp_hid]):
             return HttpResponse('参数不全')
-        print('1')
+
         # 更改到相应表中
         homework = Homework.objects.filter(homeworkid=temp_hid)
-        print('2')
+
         if homework is not None:
             if temp_stime:
                 homework.update(homeworkstarttime=temp_stime)
@@ -501,7 +501,7 @@ def activity_attend(request):
     # POST请求, 业务实现
     elif request.method == 'POST':
         temp_aid = request.POST.get('temp_activity_id')
-        temp_tid = request.POST.get('temp_activity_id')
+        temp_tid = request.POST.get('temp_teacher_id')
 
         if not all([temp_aid, temp_tid]):
             return HttpResponse('参数不全')
