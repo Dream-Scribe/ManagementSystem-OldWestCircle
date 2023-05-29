@@ -7,6 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
+
 class Activity(models.Model):
     activityid = models.BigAutoField(db_column='activityID', primary_key=True)  # Field name made lowercase.
     adminid = models.ForeignKey('Admin', models.DO_NOTHING, db_column='adminID', to_field='adminid')  # Field name made lowercase.
