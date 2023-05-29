@@ -47,11 +47,6 @@ def booking_select(request):
         temp_tid = request.POST.get('temp_teacher_id')
         temp_sid = request.POST.get('temp_student_id')
         temp_time = request.POST.get('temp_time')
-        # print(temp_condition_1)
-        # print(temp_condition_2)
-
-        # 列表存储查询结果
-        temp_json_data = []
 
         # 参数都为空, 查询全部申请信息
         if not temp_tid:
@@ -68,8 +63,10 @@ def booking_select(request):
                                                   bookingtime=temp_time)
         else:
             booking_data = Booking.objects.filter(teacherid=temp_tid)
-            # 构建结果列表
-        result = []
+
+        # 构建结果列表
+        data = []
+        count = len(booking_data)
         for st_data in booking_data:
             student_name = st_data.studentid.realname
             teacher_name = st_data.teacherid.realname
@@ -77,7 +74,7 @@ def booking_select(request):
             time = st_data.booktime
             if time:
                 time = time.strftime('%Y-%m-%d %X')
-            result.append({
+            data.append({
                 'student_name': student_name,
                 'teacher_name': teacher_name,
                 'bookdescription': bookdescription,
@@ -86,14 +83,15 @@ def booking_select(request):
             })
 
         # 将结果列表转换为JSON字符串
-        temp_json_data = json.dumps(result)
+        json_data = {
+            'code': 0,
+            'msg': '',
+            'count': count,
+            'data': data
+        }
+        json_data = json.dumps(json_data)
 
-        # else:
-        #     多条件动态查询
-        #     temp_data 保存
-        #     数组转为 json 格式
-
-        return HttpResponse(temp_json_data, content_type='application/json')
+        return HttpResponse(json_data, content_type='application/json')
 
     # return HttpResponse('预约查询')
 
@@ -168,10 +166,7 @@ def timetable(request):
 
     # POST请求, 业务实现
     elif request.method == 'POST':
-        temp_tid = request.POST.get('temp_tid')
-
-        # 列表存储查询结果
-        temp_json_data = []
+        temp_tid = int(request.POST.get('temp_tid'))
 
         # 参数都为空, 查询全部信息
         if not temp_tid:
@@ -181,7 +176,8 @@ def timetable(request):
             timetable_data = Teach.objects.filter(teacherid=temp_tid)
 
         # 构建结果列表
-        result = []
+        data = []
+        count = len(timetable_data)
         for time_data in timetable_data:
             course_name = time_data.courseid.coursename
             class_set = Class.objects.filter(courseid=time_data.courseid)
@@ -199,7 +195,7 @@ def timetable(request):
                 etime = etime.strftime('%Y-%m-%d %X')
             course_type = time_data.courseid.coursetype
             course_type = translateTypeId2Type(course_type)
-            result.append({
+            data.append({
                 'course_name': course_name,
                 'course_time': course_time,
                 'course_start_time': stime,
@@ -208,9 +204,15 @@ def timetable(request):
             })
 
         # 将结果列表转换为JSON字符串
-        temp_json_data = json.dumps(result)
+        json_data = {
+            'code': 0,
+            'msg': '',
+            'count': count,
+            'data': data
+        }
+        json_data = json.dumps(json_data)
 
-        return HttpResponse(temp_json_data, content_type='application/json')
+        return HttpResponse(json_data, content_type='application/json')
 
     return HttpResponse('课表')
 
@@ -434,12 +436,6 @@ def homework_select(request):
         temp_cid = request.POST.get('temp_class_id')
         temp_tid = request.POST.get('temp_teacher_id')
 
-        # print(temp_condition_1)
-        # print(temp_condition_2)
-
-        # 列表存储查询结果
-        temp_json_data = []
-
         # 参数都为空, 查询全部申请信息
         if not temp_tid:
             # 执行中间表的查询操作，获取数据
@@ -453,8 +449,9 @@ def homework_select(request):
         else:
             homework_data = Homework.objects.filter(teacherid=temp_tid)
 
-            # 构建结果列表
-        result = []
+        # 构建结果列表
+        data = []
+        count = len(homework_data)
         for hw_data in homework_data:
             class_id = hw_data.classid
 
@@ -465,10 +462,10 @@ def homework_select(request):
             if stime:
                 stime = stime.strftime('%Y-%m-%d %X')
             etime = hw_data.homeworkendtime.strftime('%Y-%m-%d %X')
-            if etime:
-                etime = etime.strftime('%Y-%m-%d %X')
+            # if etime:
+            #     etime = etime.strftime('%Y-%m-%d %X')
             content = hw_data.homeworkcontent
-            result.append({
+            data.append({
                 'homework_id': homework_id,
                 'class_id': class_id.classid,
                 'course_name': course_name,
@@ -478,14 +475,15 @@ def homework_select(request):
             })
 
             # 将结果列表转换为JSON字符串
-        temp_json_data = json.dumps(result)
+            json_data = {
+                'code': 0,
+                'msg': '',
+                'count': count,
+                'data': data
+            }
+            json_data = json.dumps(json_data)
 
-        # else:
-        #     多条件动态查询
-        #     temp_data 保存
-        #     数组转为 json 格式
-
-        return HttpResponse(temp_json_data, content_type='application/json')
+            return HttpResponse(json_data, content_type='application/json')
 
     # return HttpResponse('预约查询')
 
@@ -560,7 +558,9 @@ def activity_show(request):
             activities = [x.activityid for x in Teacherattend.objects.filter(teacherid=temp_tid)]
         else:
             activities = Activity.objects.all()
-        result = []
+
+        data = []
+        count = len(activities)
 
         for activity in activities:
             activity_id = activity.activityid
@@ -573,7 +573,7 @@ def activity_show(request):
             activity_etime = activity.activityendtime
             if activity_etime:
                 activity_etime = activity_etime.strftime('%Y-%m-%d %X')
-            result.append({
+            data.append({
                 'activity_id': activity_id,
                 'content': activity_content,
                 'place': activity_place,
@@ -581,9 +581,16 @@ def activity_show(request):
                 'end_time': activity_etime,
             })
 
-        temp_json_data = json.dumps(result)
+        # 将结果列表转换为JSON字符串
+        json_data = {
+            'code': 0,
+            'msg': '',
+            'count': count,
+            'data': data
+        }
+        json_data = json.dumps(json_data)
 
-        return HttpResponse(temp_json_data, content_type='application/json')
+        return HttpResponse(json_data, content_type='application/json')
 
 
 def announcement_show(request):
@@ -599,20 +606,28 @@ def announcement_show(request):
     # POST请求, 业务实现
     elif request.method == 'POST':
         announcements = Announcement.objects.all()
-        result = []
 
+        data = []
+        count = len(announcements)
         for announcement in announcements:
             announcement_id = announcement.announceid
             content = announcement.announcecontent
             time = announcement.announcepublishtime
             if time:
                 time = time.strftime('%Y-%m-%d %X')
-            result.append({
+            data.append({
                 'announcement_id': announcement_id,
                 'content': content,
                 'publish_time': time
             })
 
-        temp_json_data = json.dumps(result)
+        # 将结果列表转换为JSON字符串
+        json_data = {
+            'code': 0,
+            'msg': '',
+            'count': count,
+            'data': data
+        }
+        json_data = json.dumps(json_data)
 
-        return HttpResponse(temp_json_data, content_type='application/json')
+        return HttpResponse(json_data, content_type='application/json')
