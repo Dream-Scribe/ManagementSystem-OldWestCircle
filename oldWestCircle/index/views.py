@@ -38,15 +38,15 @@ def my_login(request):
 
         if user == 'student':
             obj = HttpResponse('学生登入成功')
-            # session 设置
-            session_id = set_login_session(phone_number, 'student')
-            obj.set_cookie("my_session_id", session_id)
+            # # session 设置
+            # session_id = set_login_session(phone_number, 'student')
+            # obj.set_cookie("my_session_id", session_id)
             return obj
         elif user == 'teacher':
             obj = HttpResponse('教师登入成功')
-            # session 设置
-            session_id = set_login_session(phone_number, 'teacher')
-            obj.set_cookie("my_session_id", session_id)
+            # # session 设置
+            # session_id = set_login_session(phone_number, 'teacher')
+            # obj.set_cookie("my_session_id", session_id)
             return obj
         else:
             return HttpResponse("失败")
