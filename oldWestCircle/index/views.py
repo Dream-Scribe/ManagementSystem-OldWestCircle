@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse
 from index.models import Course, Teacher, Student
-from index.utils import check_login, check_register
+from index.utils import check_login, check_register, set_login_session
 
 import json
 
@@ -37,9 +37,17 @@ def my_login(request):
         print(user)
 
         if user == 'student':
-            return HttpResponse("学生成功")
+            obj = HttpResponse('学生登入成功')
+            # # session 设置
+            # session_id = set_login_session(phone_number, 'student')
+            # obj.set_cookie("my_session_id", session_id)
+            return obj
         elif user == 'teacher':
-            return HttpResponse("教师成功")
+            obj = HttpResponse('教师登入成功')
+            # # session 设置
+            # session_id = set_login_session(phone_number, 'teacher')
+            # obj.set_cookie("my_session_id", session_id)
+            return obj
         else:
             return HttpResponse("失败")
 
