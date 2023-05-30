@@ -222,6 +222,15 @@ class Homework(models.Model):
         db_table = 'homework'
 
 
+class Mysession(models.Model):
+    session_id = models.CharField(max_length=32, blank=True, null=True)
+    session_value = models.CharField(max_length=64, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'mysession'
+
+
 class Student(models.Model):
     studentid = models.BigIntegerField(db_column='studentID', primary_key=True)  # Field name made lowercase.
     registertime = models.DateTimeField(db_column='registerTime', blank=True, null=True)  # Field name made lowercase.

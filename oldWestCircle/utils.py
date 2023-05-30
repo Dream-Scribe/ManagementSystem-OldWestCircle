@@ -1,6 +1,6 @@
 import json
 
-from index.models import *
+from index.models import Mysession
 
 
 def translateDateId2Date(date_id):
@@ -86,7 +86,7 @@ def translateType2TypeId(type):
 
 def check_session(session_id=None):
     try:
-        user = Session.objects.get(session_id=session_id)
+        user = Mysession.objects.get(session_id=session_id)
     except Exception as e:
         print(e)
         return 'nobody'

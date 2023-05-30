@@ -1,7 +1,7 @@
 import json
 import random
 
-from index.models import Student, Teacher
+from index.models import Student, Teacher, Mysession
 
 
 def check_login(phone_number, password, login_type):
@@ -69,7 +69,7 @@ def set_login_session(phone, power):
 
     # 将自定义session信息存入数据库
     value = json.dumps(value)
-    Session.objects.create(session_id=session_id, session_value=value)
+    Mysession.objects.create(session_id=session_id, session_value=value)
 
     # 将自定义session_id返回
     return session_id
