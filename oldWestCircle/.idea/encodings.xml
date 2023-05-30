@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/administrator/models.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/index/models.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/models.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/student/models.py" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/teacher/models.py" charset="UTF-8" />
   </component>
