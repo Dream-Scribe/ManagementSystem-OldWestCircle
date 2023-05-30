@@ -1,3 +1,8 @@
+import json
+
+from index.models import *
+
+
 def translateDateId2Date(date_id):
     if date_id == 1:
         return "Monday"
@@ -77,3 +82,15 @@ def translateType2TypeId(type):
         return 8
     else:
         return
+
+
+def check_session(session_id=None):
+    try:
+        user = Session.objects.get(session_id=session_id)
+    except Exception as e:
+        print(e)
+        return 'nobody'
+
+    value = json.loads(user.session_value)
+
+    return value['power']
