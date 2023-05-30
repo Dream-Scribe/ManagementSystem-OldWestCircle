@@ -50,19 +50,19 @@ def booking_select(request):
         temp_sid = request.POST.get('temp_student_id')
         temp_time = request.POST.get('temp_time')
 
-        # 参数都为空, 查询全部申请信息
+        # 参数都为空, 查询全部申请信息， 必须有教师id
         if not temp_tid:
 
             # 执行中间表的查询操作，获取数据
             booking_data = Booking.objects.all()
         elif temp_sid and temp_time:
-            print('2')
-            booking_data = Booking.objects.filter(teacherid=temp_tid, studentid=temp_sid, bookingtime=temp_time)
+
+            booking_data = Booking.objects.filter(teacherid=temp_tid, studentid=temp_sid, booktime=temp_time)
         elif temp_sid:
             booking_data = Booking.objects.filter(teacherid=temp_tid, studentid=temp_sid)
         elif temp_time:
             booking_data = Booking.objects.filter(teacherid=temp_tid,
-                                                  bookingtime=temp_time)
+                                                  booktime=temp_time)
         else:
             booking_data = Booking.objects.filter(teacherid=temp_tid)
 
@@ -132,8 +132,8 @@ def evaluate(request):
     """
     # POST请求, 业务实现
     if request.method == 'POST':
-        temp_studentid = request.POST.get('temp_sid')
-        temp_tid = request.POST.get('temp_tid')
+        temp_studentid = request.POST.get('temp_student_id')
+        temp_tid = request.POST.get('temp_teacher_id')
         temp_comment = request.POST.get('temp_comment')
         temp_star = request.POST.get('temp_star')
         time = timezone.now()
@@ -415,7 +415,7 @@ def homework_delete(request):
         # 参数不全, 错误
         if not all([temp_hid]):
             return HttpResponse('参数不全')
-        Homework.objects.get(homeworkid=temp_hid).delete()
+        Homework.objects.filter(homeworkid=temp_hid).delete()
         # 返回成功信息。
         return HttpResponse('ok')
 
@@ -508,7 +508,7 @@ def activity_attend(request):
         if not all([temp_aid, temp_tid]):
             return HttpResponse('参数不全')
         elif temp_aid and temp_tid:
-            attend = TeacherAttend.objects.create(activityid=temp_aid, teacherid=temp_tid)
+            attend = Teacherattend.objects.create(activityid=Activity.objects.get(activityid=temp_aid), teacherid=Teacher.objects.get(teacherid=temp_tid))
             return HttpResponse('ok')
 
     return HttpResponse('活动参加')
@@ -527,12 +527,12 @@ def activity_cancel(request):
     # POST请求, 业务实现
     elif request.method == 'POST':
         temp_aid = request.POST.get('temp_activity_id')
-        temp_tid = request.POST.get('temp_activity_id')
+        temp_tid = request.POST.get('temp_teacher_id')
 
         if not all([temp_aid, temp_tid]):
             return HttpResponse('参数不全')
         elif temp_aid and temp_tid:
-            TeacherAttend.objects.get(activityid=temp_aid, teacherid=temp_tid).delete()
+            Teacherattend.objects.filter(activityid=temp_aid, teacherid=temp_tid).delete()
 
             return HttpResponse('ok')
 
