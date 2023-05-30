@@ -166,14 +166,14 @@ def timetable(request):
 
     # POST请求, 业务实现
     elif request.method == 'POST':
-        temp_tid = int(request.POST.get('temp_tid'))
+        temp_tid = request.POST.get('temp_tid')
 
         # 参数都为空, 查询全部信息
         if not temp_tid:
             # 执行中间表的查询操作，获取数据
             timetable_data = Teach.objects.all()
         else:
-            timetable_data = Teach.objects.filter(teacherid=temp_tid)
+            timetable_data = Teach.objects.filter(teacherid=int(temp_tid))
 
         # 构建结果列表
         data = []
