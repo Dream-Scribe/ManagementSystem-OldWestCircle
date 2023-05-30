@@ -134,7 +134,7 @@ def user_add(request):
         real_name = request.POST.get('temp_real_name')
         phone_number = request.POST.get('temp_phone_number')
         userpd = request.POST.get('temp_userpd')
-        teacher_field = int(request.POST.get('teacher_field'))
+        teacher_field = request.POST.get('teacher_field')
 
         # 参数不全, 错误
         if not all([teacher_id, real_name, phone_number, userpd]):
@@ -147,7 +147,7 @@ def user_add(request):
                                    realname=real_name,
                                    phonenumber=phone_number,
                                    userpd=userpd,
-                                   teacherfield=teacher_field)
+                                   teacherfield=int(teacher_field))
 
             return HttpResponse('success')
         except Exception as e:
@@ -165,14 +165,14 @@ def user_delete(request):
     """
     # POST请求, 业务实现
     if request.method == 'POST':
-        temp_id = int(request.POST.get('temp_id'))
+        temp_id = request.POST.get('temp_id')
 
         # 参数不全, 错误
         if not all([temp_id]):
             return HttpResponse('参数不全')
 
         try:
-            Teacher.objects.get(teacherid=temp_id).delete()
+            Teacher.objects.get(teacherid=int(temp_id)).delete()
             return HttpResponse('success')
         except Exception as e:
             print(e)
