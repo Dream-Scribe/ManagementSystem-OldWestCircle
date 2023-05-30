@@ -371,7 +371,7 @@ def class_start(request):
 
         course = Course.objects.get(courseid=temp_cid)
         if course:
-            if not Class.objects.filter(courseid=temp_cid, classtime=temp_time, classdate=temp_date)
+            if not Class.objects.filter(courseid=temp_cid, classtime=temp_time, classdate=temp_date):
                 Class.objects.create(courseid=temp_cid, classtime=temp_time, classdate=temp_date, classstudentnum=0)
                 return HttpResponse('ok')
             else:
