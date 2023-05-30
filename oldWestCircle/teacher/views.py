@@ -302,7 +302,7 @@ def course_change(request):
             return HttpResponse('参数不全')
 
         # 更改到相应表中
-        course = Course.objects.filter(courseid=temp_cid)
+        course = Course.objects.get(courseid=temp_cid)
         if course is not None:
             if temp_stime:
                 course.update(coursestarttime=temp_stime)
@@ -348,6 +348,92 @@ def course_delete(request):
 
     return HttpResponse('删除课程')
 
+
+def class_start(request):
+    """
+        课程开设具体的一个班级
+        @param request:
+        @return:
+        """
+    # GET请求, 进入课程开设页面
+    if request.method == 'GET':
+        return render(request, 'temp_课程开设')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_cid = request.POST.get('temp_course_id')
+        temp_date = request.POST.get('temp_date')
+        temp_date = translateDate2DateId(temp_date)
+        temp_time = request.POST.get('temp_time')
+
+        if not any([temp_cid, temp_date, temp_time]):
+            return HttpResponse('参数不全')
+
+        course = Course.objects.get(courseid=temp_cid)
+        if course:
+            if not Class.objects.filter(courseid=temp_cid, classtime=temp_time, classdate=temp_date)
+                Class.objects.create(courseid=temp_cid, classtime=temp_time, classdate=temp_date, classstudentnum=0)
+                return HttpResponse('ok')
+            else:
+                return HttpResponse('已存在相应班级')
+        else:
+            return HttpResponse('不存在该课程')
+
+def class_delete(request):
+    """
+            删除具体的一个班级
+            @param request:
+            @return:
+            """
+    # GET请求, 进入课程开设页面
+    if request.method == 'GET':
+        return render(request, 'temp_删除班级')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_cid = request.POST.get('temp_class_id')
+        # 参数不全, 错误
+        if not all([temp_cid]):
+            return HttpResponse('参数不全')
+        Class.objects.get(classid=temp_cid).delete()
+        # 返回成功信息。
+        return HttpResponse('ok')
+
+    return HttpResponse('删除班级')
+
+
+def class_change(request):
+    """
+    班级更改
+    @param request:
+    @return:
+    """
+    # GET请求, 进入课程开设页面
+    if request.method == 'GET':
+        return render(request, 'temp_班级更改')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_cid = request.POST.get('temp_class_id')
+        temp_time = request.POST.get('temp_time')
+        temp_date = request.POST.get('temp_date')
+
+        # 参数不全, 错误
+        if not all([temp_cid]):
+            return HttpResponse('参数不全')
+
+        # 更改到相应表中
+        class_ = Class.objects.get(classid=temp_cid)
+        if class_ is not None:
+            if temp_time:
+                class_.update(classtime=temp_time)
+            if temp_date:
+                class_.update(classdate=translateDate2DateId(temp_date))
+
+        # 返回成功信息。
+        return HttpResponse('ok')
+
+    return HttpResponse('班级更改')
 
 def homework_assign(request):
     """
