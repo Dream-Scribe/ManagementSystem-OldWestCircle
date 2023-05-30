@@ -154,6 +154,24 @@ def evaluate(request):
         return HttpResponse('ok')
 
     # return HttpResponse('评价')
+def evaluate_delete(request):
+    """
+       删除评价
+       @param request:
+       @return:
+       """
+    # POST请求, 业务实现
+    if request.method == 'POST':
+        temp_tid = request.POST.get('temp_teacher_id')
+        temp_sid = request.POST.get('temp_student_id')
+
+        temp_time = request.POST.get('temp_time')
+        if not all([temp_sid, temp_tid, temp_time]):
+            return HttpResponse('参数不全')
+        Teachertostudentcomment.objects.filter(studentid=Student.objects.get(studentid=temp_sid),
+                                               teacherid=Teacher.objects.get(teacherid=temp_tid),
+                                               s2tcommenttime=temp_time).delete()
+        return HttpResponse('ok')
 
 
 def timetable(request):

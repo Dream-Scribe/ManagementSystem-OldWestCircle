@@ -12,6 +12,7 @@ urlpatterns = [
     path('bookingSelect', views.booking_select),
     path('bookingExamine', views.booking_examine),
     path('evaluate', views.evaluate),
+    path('evaluateDelete', views.evaluate_delete),
     path('timetable', views.timetable),
     path('courseStart', views.course_start),
     path('courseChange', views.course_change),
