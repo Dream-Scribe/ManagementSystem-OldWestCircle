@@ -3,6 +3,7 @@ import json
 
 from django.utils import timezone
 from index.models import *
+from utils import *
 
 
 # Create your views here.
@@ -263,14 +264,14 @@ def booking_select(request):
         for st_data in booking_data:
             student_name = st_data.studentid.realname
             teacher_name = st_data.teacherid.realname
-            bookdescription = st_data.bookdescription
+            book_description = st_data.bookdescription
             time = st_data.booktime
             if time:
                 time = time.strftime('%Y-%m-%d %X')
             data.append({
                 'student_name': student_name,
                 'teacher_name': teacher_name,
-                'bookdescription': bookdescription,
+                'book_description': book_description,
                 'time': time
 
             })
@@ -295,27 +296,55 @@ def timetable(request):
     @param request:
     @return:
     """
-    # # GET请求, 进入课表查看页面
-    # if request.method == 'GET':
-    #     return render(request, 'temp_课表查看')
-    #
-    # # POST请求, 业务实现
-    # elif request.method == 'POST':
-    #     temp_condition_1 = request.POST.get('temp_condition_1')
-    #     temp_condition_2 = request.POST.get('temp_condition_2')
-    #
-    #     # 列表存储查询结果
-    #     temp_data = []
-    #     temp_json_data = []
-    #
-    #     # 参数都为空, 查询全部信息
-    #     if not any([temp_condition_1, temp_condition_2]):
-    #         数据库相应表查询
-    #         将结果数组合并
-    #         temp_data 保存
-    #         数组转为 json 格式
-    #
-    #     return HttpResponse(temp_json_data, content_type='application/json')
+    # GET请求, 进入课表查看页面
+    if request.method == 'GET':
+        return render(request, 'temp_课表查看')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_sid = request.POST.get('temp_student_id')
+
+        # 参数都为空, 查询全部信息
+        if not temp_sid:
+            return HttpResponse("参数不全")
+        else:
+            timetable_data = Studyingat.objects.filter(studentid=temp_sid)
+        data = []
+        count = len(timetable_data)
+        # 数据库相应表查询
+        for time_data in timetable_data:
+            class_id = time_data.classid
+            course_name = class_id.courseid.coursename
+            course_type = class_id.courseid.coursetype
+            course_type = translateTypeId2Type(course_type)
+            stime = class_id.courseid.coursestarttime
+            etime = class_id.courseid.courseendtime
+            if stime:
+                stime = stime.strftime('%Y-%m-%d %X')
+
+            if etime:
+                etime = etime.strftime('%Y-%m-%d %X')
+            time = class_id.classtime
+            date = translateDateId2Date(class_id.classdate)
+            data.append({
+                'class_id': class_id.classid,
+                'course_name': course_name,
+                'class_time': time,
+                'class_date': date,
+                'course_start_time': stime,
+                'course_end_time': etime,
+                'course_type': course_type
+            })
+        # 数组转为 json 格式
+        json_data = {
+            'code': 0,
+            'msg': '',
+            'count': count,
+            'data': data
+        }
+        json_data = json.dumps(json_data)
+
+        return HttpResponse(json_data, content_type='application/json')
 
     return HttpResponse('课表')
 
@@ -365,7 +394,7 @@ def evaluate_teacher(request):
             return HttpResponse('参数不全')
 
             # 添加数据到相应表
-        Studenttoteachercomment.objects.create(
+        Studenttoteachercomment.objects.update_or_create(
             studentid=Student.objects.get(studentid=temp_sid),
             teacherid=Teacher.objects.get(teacherid=temp_tid),
             s2tcomment=temp_comment,
@@ -377,3 +406,78 @@ def evaluate_teacher(request):
 
     return HttpResponse('这是学生给教师评价')
 
+
+def evaluate_delete(request):
+    """
+       删除已有的对教师的评价
+       @param request:
+       @return:
+       """
+    # POST请求, 业务实现
+    if request.method == 'POST':
+        temp_tid = request.POST.get('temp_teacher_id')
+        temp_sid = request.POST.get('temp_student_id')
+
+        temp_time = request.POST.get('temp_time')
+        if not all([temp_sid, temp_tid, temp_time]):
+            return HttpResponse('参数不全')
+        Studenttoteachercomment.objects.filter(studentid=Student.objects.get(studentid=temp_sid),
+                                               teacherid=Teacher.objects.get(teacherid=temp_tid),
+                                               s2tcommenttime=temp_time).delete()
+        return HttpResponse('ok')
+
+
+def class_choose(request):
+    """
+           选择班级
+           @param request:
+           @return:
+           """
+    # POST请求, 业务实现
+    if request.method == 'POST':
+        temp_sid = request.POST.get('temp_student_id')
+        temp_cid = request.POST.get('temp_class_id')
+
+        if not any([temp_sid, temp_cid]):
+            return HttpResponse('参数不全')
+
+        class_ = Class.objects.get(classid=temp_cid)
+        if class_ is None:
+            return HttpResponse('不存在该班级')
+        record = Studyingat.objects.get(classid=class_, studentid=temp_sid)
+        if record is None:
+            Studyingat.objects.create(classid=class_, studentid=Student.objects.get(studentid=temp_sid))
+            class_.update(classstudentnum=class_.classstudentnum + 1)
+            class_.courseid.update(courseregisternum=class_.courseid.courseregisternum + 1)
+        else:
+            return HttpResponse('已经在该班级')
+
+        return HttpResponse('ok')
+    return HttpResponse('选择班级')
+
+
+def class_quit(request):
+    """
+               退出一个班级
+               @param request:
+               @return:
+               """
+    # POST请求, 业务实现
+    if request.method == 'POST':
+        temp_sid = request.POST.get('temp_student_id')
+        temp_cid = request.POST.get('temp_class_id')
+
+        if not any([temp_sid, temp_cid]):
+            return HttpResponse('参数不全')
+        record = Studyingat.objects.get(classid=temp_cid, studentid=temp_sid)
+        if record is not None:
+            class_ = record.classid
+            class_.update(classstudentnum=class_.classstudentnum - 1)
+            class_.courseid.update(courseregisternum=class_.courseid.courseregisternum - 1)
+            record.delete()
+
+            return HttpResponse('ok')
+        else:
+            return HttpResponse('不在该班级')
+
+    return HttpResponse('退出班级')
