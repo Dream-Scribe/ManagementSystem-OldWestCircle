@@ -27,6 +27,8 @@ def studentTable(request):
 def homepage(request):
     return render(request, 'teacher/homepage.html')
 
+def addPage(request):
+    return render(request, 'teacher/addPage.html')
 
 def homework(request):
     return render(request, 'teacher/homework.html')

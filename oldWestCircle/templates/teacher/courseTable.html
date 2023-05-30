@@ -112,7 +112,7 @@
          */
         table.on('toolbar(currentTableFilter)', function (obj) {
             if (obj.event === 'add') {   // 监听添加操作
-                var content = miniPage.getHrefContent('page/table/add.html');
+                var content = miniPage.getHrefContent('addPage');
                 var openWH = miniPage.getOpenWidthHeight();
 
                 var index = layer.open({

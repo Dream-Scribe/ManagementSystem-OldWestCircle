@@ -7,6 +7,7 @@ urlpatterns = [
     path('applyTable', views.applyTable),
     path('studentTable', views.studentTable),
     path('homepage', views.homepage),
+    path('addPage',views.addPage),
     path('homework', views.homework),
     path('bookingSelect', views.booking_select),
     path('bookingExamine', views.booking_examine),
