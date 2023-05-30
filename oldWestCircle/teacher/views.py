@@ -56,7 +56,7 @@ def booking_select(request):
             # 执行中间表的查询操作，获取数据
             booking_data = Booking.objects.all()
         elif temp_sid and temp_time:
-            print('2')
+
             booking_data = Booking.objects.filter(teacherid=temp_tid, studentid=temp_sid, bookingtime=temp_time)
         elif temp_sid:
             booking_data = Booking.objects.filter(teacherid=temp_tid, studentid=temp_sid)
@@ -550,7 +550,7 @@ def activity_cancel(request):
         if not all([temp_aid, temp_tid]):
             return HttpResponse('参数不全')
         elif temp_aid and temp_tid:
-            Teacherattend.objects.get(activityid=temp_aid, teacherid=temp_tid).delete()
+            Teacherattend.objects.filter(activityid=temp_aid, teacherid=temp_tid).delete()
 
             return HttpResponse('ok')
 
