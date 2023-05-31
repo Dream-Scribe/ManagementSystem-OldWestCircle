@@ -18,7 +18,6 @@ def check_login(phone_number, password, login_type):
         if student is not None:
             return 'student'
 
-
     elif login_type == 'teacher':
         try:
             teacher = Teacher.objects.get(phonenumber=phone_number, userpd=password)

@@ -2,14 +2,11 @@ import json
 
 from django.shortcuts import render, HttpResponse
 from index.models import Activity, Admin, Announcement, Teacher, Student
+from administrator.utils import *
 from utils import get_current_time
-
 
 # Create your views here.
 
-
-def admin_test(request):
-    return HttpResponse("this is admin test")
 
 def admin(request):
     return render(request,'admin/index.html')
@@ -17,6 +14,34 @@ def ContentPublishTable(request):
     return render(request,'admin/ContentPublishTable.html')
 def UserManageTable(request):
     return render(request,'admin/UserManageTable.html')
+
+
+def admin_login(request):
+    """
+    管理员登录
+    @param request:
+    @return:
+    """
+    # POST请求, 业务实现
+    if request.method == 'POST':
+        admin_name = request.POST.get('temp_name')
+        password = request.POST.get('temp_password')
+
+        # 验证登陆信息是否完整
+        res = check_admin_login(admin_name, password)
+        print(res)
+
+        if res == 'ok':
+            obj = HttpResponse('登录成功')
+            # session 设置
+            session_id = set_login_session(admin_name)
+            obj.set_cookie("my_session_id", session_id)
+            return obj
+        else:
+            return HttpResponse("失败")
+
+    # return render(request, '登录页面')
+    return HttpResponse("this is login")
 
 
 def publish_activity(request):
