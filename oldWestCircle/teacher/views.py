@@ -257,9 +257,9 @@ def course_start(request):
         temp_name = request.POST.get('temp_name')
         temp_intro = request.POST.get('temp_intro')
         temp_state = 'reviewing'
-        # 参数不全, 错误
-        if not all([temp_type]):
-            return HttpResponse('参数不全')
+        # # 参数不全, 错误
+        # if not all([temp_type]):
+        #     return HttpResponse('参数不全')
 
         course = Course.objects.create(coursestarttime=temp_stime, courseendtime=temp_etime, coursetype=temp_type,
                                        coursename=temp_name, courseintro=temp_intro, coursestate=temp_state)
