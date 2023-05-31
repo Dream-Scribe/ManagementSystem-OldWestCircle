@@ -2,6 +2,7 @@ import json
 
 from django.shortcuts import render, HttpResponse
 from index.models import Activity, Admin, Announcement, Teacher, Student
+from utils import get_current_time
 
 
 # Create your views here.
@@ -61,17 +62,16 @@ def publish_announcement(request):
     if request.method == 'POST':
         temp_aid = request.POST.get('temp_admin_id')
         temp_content = request.POST.get('temp_content')
-        temp_time = request.POST.get('temp_time')
 
         # 参数不全, 错误
-        if not all([temp_aid, temp_time, temp_content]):
+        if not all([temp_aid, temp_content]):
             return HttpResponse('参数不全')
 
         # 将信息添加到数据库。并返回成功信息。
         try:
             Announcement.objects.create(adminid=Admin.objects.get(adminid=temp_aid),
                                     announcecontent=temp_content,
-                                    announcepublishtime=temp_time)
+                                    announcepublishtime=get_current_time())
 
             return HttpResponse('success')
         except Exception as e:
@@ -129,21 +129,20 @@ def user_add(request):
     """
     # POST请求, 业务实现
     if request.method == 'POST':
-        teacher_id = request.POST.get('temp_teacher_id')
-        register_time = request.POST.get('temp_register_time')
+        uuid = request.POST.get('temp_teacher_id')
         real_name = request.POST.get('temp_real_name')
         phone_number = request.POST.get('temp_phone_number')
         userpd = request.POST.get('temp_userpd')
-        teacher_field = request.POST.get('teacher_field')
+        teacher_field = request.POST.get('temp_field')
 
         # 参数不全, 错误
-        if not all([teacher_id, real_name, phone_number, userpd]):
+        if not all([uuid, real_name, phone_number, userpd]):
             return HttpResponse('参数不全')
 
         # 将信息添加到数据库。并返回成功信息。
         try:
-            Teacher.objects.create(teacherid=int(teacher_id),
-                                   registertime=register_time,
+            Teacher.objects.create(teacherid=int(uuid),
+                                   registertime=get_current_time(),
                                    realname=real_name,
                                    phonenumber=phone_number,
                                    userpd=userpd,

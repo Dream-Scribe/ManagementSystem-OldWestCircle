@@ -144,12 +144,18 @@ def select_teacher(request):
 
 
 def register(request):
+    """
+    学生注册
+    @param request:
+    @return:
+    """
     if request.method == 'POST':
-        phonenumber = request.POST['temp_username']
-        userpd = request.POST['temp_password']
         uuid = request.POST['temp_uuid']
+        real_name = request.POST['temp_real_name']
+        phone_number = request.POST['temp_number']
+        user_password = request.POST['temp_password']
 
-        result = check_register(phonenumber, userpd, uuid)
+        result = check_register(uuid, real_name, phone_number, user_password)
 
         return HttpResponse(result)
 
