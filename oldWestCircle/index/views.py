@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse
 from index.models import Course, Teacher, Student
 from index.utils import check_login, check_register, set_login_session
+from utils import translateTypeId2Type
 
 import json
 
@@ -85,7 +86,7 @@ def select_course(request):
         count = len(course_data)
         for each_data in course_data:
             temp_data = {
-                'course_type': str(each_data.coursetype),
+                'course_type': translateTypeId2Type(each_data.coursetype),
                 'start_time': each_data.coursestarttime.strftime('%Y-%m-%d %X'),
                 'end_time': each_data.courseendtime.strftime('%Y-%m-%d %X'),
                 'course_intro': each_data.courseintro,
@@ -124,7 +125,7 @@ def select_teacher(request):
             temp_data = {
                 'real_name': str(each_data.realname),
                 'intro': str(each_data.teacherintro),
-                'field': str(each_data.teacherfield),
+                'field': translateTypeId2Type(each_data.teacherfield),
                 'welcome_deg': str(each_data.teacherwelcomedeg),
             }
             data.append(temp_data)
