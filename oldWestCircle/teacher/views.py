@@ -264,9 +264,9 @@ def course_start(request):
         course = Course.objects.create(coursestarttime=temp_stime, courseendtime=temp_etime, coursetype=temp_type,
                                        coursename=temp_name, courseintro=temp_intro, coursestate=temp_state)
 
-        coursereview = Coursereview.objects.create(courseid=course, adminid=Admin.objects.order_by('?').first(),
+        coursereview = Coursereview.objects.create(courseid=course, adminid=int(Admin.objects.order_by('?').first().adminid),
                                                    reviewstate=temp_state)
-        # print(course.courseid)
+
         # 加入相应表中
 
         # 返回成功信息。
