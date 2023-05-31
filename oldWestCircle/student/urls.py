@@ -15,6 +15,10 @@ urlpatterns = [
     path('booking', views.booking),
     path('bookingSelect', views.booking_select),
     path('teacherEvaluate', views.evaluate_teacher),
+    path('teacherEvalDelete', views.teacher_eval_delete),
     path('classChoose', views.class_choose),
-    path('classQuit', views.class_quit)
+    path('classQuit', views.class_quit),
+    path('homeworkSelect', views.homework_select),
+    path('courseEvaluate', views.evaluate_course),
+    path('courseEvalDelete', views.course_eval_delete)
 ]

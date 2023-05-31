@@ -407,7 +407,7 @@ def evaluate_teacher(request):
     return HttpResponse('这是学生给教师评价')
 
 
-def evaluate_delete(request):
+def teacher_eval_delete(request):
     """
        删除已有的对教师的评价
        @param request:
@@ -481,3 +481,141 @@ def class_quit(request):
             return HttpResponse('不在该班级')
 
     return HttpResponse('退出班级')
+
+
+def homework_select(request):
+    """
+     查看发布的作业
+     @param request:
+     @return:
+     """
+    # GET请求, 进入作业发布
+    if request.method == 'GET':
+        return render(request, 'temp_作业发布')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_hid = request.POST.get('temp_homework_id')
+        temp_cid = request.POST.get('temp_class_id')
+        temp_tid = request.POST.get('temp_teacher_id')
+
+        # 参数都为空, 查询全部申请信息
+        if not temp_tid:
+            # 执行中间表的查询操作，获取数据
+            homework_data = Homework.objects.all()
+        elif temp_hid and temp_cid:
+            homework_data = Homework.objects.filter(teacherid=temp_tid, homeworkid=temp_hid, classid=temp_cid)
+        elif temp_hid:
+            homework_data = Homework.objects.filter(teacherid=temp_tid, homeworkid=temp_hid)
+        elif temp_cid:
+            homework_data = Homework.objects.filter(teacherid=temp_tid, classid=temp_cid)
+        else:
+            homework_data = Homework.objects.filter(teacherid=temp_tid)
+
+        # 构建结果列表
+        data = []
+        count = len(homework_data)
+        for hw_data in homework_data:
+            class_id = hw_data.classid
+
+            homework_id = hw_data.homeworkid
+
+            course_name = hw_data.classid.courseid.coursename
+            stime = hw_data.homeworkstarttime
+            if stime:
+                stime = stime.strftime('%Y-%m-%d %X')
+            etime = hw_data.homeworkendtime.strftime('%Y-%m-%d %X')
+            # if etime:
+            #     etime = etime.strftime('%Y-%m-%d %X')
+            content = hw_data.homeworkcontent
+            data.append({
+                'homework_id': homework_id,
+                'class_id': class_id.classid,
+                'course_name': course_name,
+                'start_time': stime,
+                'end_time': etime,
+                'content': content
+            })
+
+            # 将结果列表转换为JSON字符串
+            json_data = {
+                'code': 0,
+                'msg': '',
+                'count': count,
+                'data': data
+            }
+            json_data = json.dumps(json_data)
+
+            return HttpResponse(json_data, content_type='application/json')
+
+
+def evaluate_course(request):
+    """
+    给予课程评价
+    @param request:
+    @return:
+    """
+    # POST请求, 业务实现
+    if request.method == 'POST':
+        temp_cid = request.POST.get('temp_course_id')
+        temp_sid = request.POST.get('temp_student_id')
+
+        temp_comment = request.POST.get('temp_comment')
+        temp_star = request.POST.get('temp_star')
+        time = timezone.now()
+
+        # 参数不全, 错误
+
+        if not all([temp_sid, temp_cid]):
+            return HttpResponse('参数不全')
+
+            # 添加数据到相应表
+        comment = Studenttocoursecomment.objects.filter(
+            studentid=Student.objects.get(studentid=temp_sid),
+            courseid=Course.objects.get(courseid=temp_cid)
+        )
+        print(comment.count())
+        # 只允许评价一次，再次评价会覆盖上一次
+        if comment.count() == 0:
+            Studenttocoursecomment.objects.create(
+                studentid=Student.objects.get(studentid=temp_sid),
+                courseid=Course.objects.get(courseid=temp_cid),
+                s2ccomment=temp_comment,
+                s2cstar=temp_star,
+                s2ccommenttime=time
+            )
+            return HttpResponse('ok')
+
+        else:
+            comment.update(
+                s2ccomment=temp_comment,
+                s2cstar=temp_star,
+                s2ccommenttime=time
+            )
+            # 返回成功信息。
+            return HttpResponse('已覆盖上一次的评论')
+
+    return HttpResponse('课程评价')
+
+
+def course_eval_delete(request):
+    """
+       删除已有的对课程的评价
+       @param request:
+       @return:
+       """
+    # POST请求, 业务实现
+    if request.method == 'POST':
+        temp_cid = request.POST.get('temp_course_id')
+        temp_sid = request.POST.get('temp_student_id')
+
+        if not all([temp_sid, temp_cid]):
+            return HttpResponse('参数不全')
+        comment = Studenttocoursecomment.objects.filter(
+            studentid=Student.objects.get(studentid=temp_sid),
+            courseid=Course.objects.get(courseid=temp_cid)
+        )
+        if comment:
+            comment.delete()
+
+        return HttpResponse('ok')
