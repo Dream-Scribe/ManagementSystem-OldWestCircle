@@ -1,4 +1,4 @@
-import json
+import json, hashlib
 from datetime import datetime
 from index.models import Mysession
 
@@ -103,3 +103,25 @@ def check_session(session_id=None):
     value = json.loads(user.session_value)
 
     return value['power']
+
+
+def hash_password(password, salt):
+    """
+    使用 SHA-256 哈希算法
+    @param password:
+    @param salt:
+    @return:
+    """
+    salted_password = salt + password
+
+    # 创建哈希对象
+    hasher = hashlib.sha256()
+
+    # 更新哈希对象的内容
+    hasher.update(salted_password.encode('utf-8'))
+
+    # 获取哈希值
+    hashed_password = hasher.hexdigest()
+
+    # 返回哈希值
+    return hashed_password

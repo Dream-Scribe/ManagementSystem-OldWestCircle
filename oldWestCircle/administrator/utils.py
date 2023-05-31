@@ -2,11 +2,15 @@ import json
 import random
 
 from index.models import Admin, Mysession
+from utils import hash_password
 
 
 def check_admin_login(admin_name, password):
     if not all([admin_name, password]):
         return None
+
+    # # 对于 admin ，可使用 admin_id 作为 salt
+    # password = hash_password(password, admin_id)
 
     try:
         admin = Admin.objects.get(adminname=admin_name, adminpd=password)

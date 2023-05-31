@@ -2,12 +2,15 @@ import json
 import random
 
 from index.models import Student, Teacher, Mysession
-from utils import get_current_time
+from utils import get_current_time, hash_password
 
 
 def check_login(phone_number, password, login_type):
     if not all([phone_number, password, login_type]):
         return None
+
+    # # 对于 student 与 teacher ，可使用 register_time 作为 salt
+    # password = hash_password(password, register_time)
 
     elif login_type == 'student':
         try:
@@ -34,12 +37,17 @@ def check_register(uuid, real_name, phone_number, password):
     for i in users:
         if phone_number == i.phonenumber:
             return "用户已存在"
+
+    # 对于 student ，可使用 register_time 作为 salt
+    register_time = get_current_time()
+    # password = hash_password(password, register_time)
+
     try:
         Student.objects.create(studentid=uuid,
                                realname=real_name,
                                phonenumber=phone_number,
                                userpd=password,
-                               registertime=get_current_time())
+                               registertime=register_time)
         return "注册成功"
     except Exception as e:
         print(e)
