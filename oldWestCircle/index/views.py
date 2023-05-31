@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse
 from index.models import Course, Teacher, Student
-from index.utils import check_login, check_register
+from index.utils import check_login, check_register, set_login_session
+from utils import translateTypeId2Type
 
 import json
 
@@ -37,9 +38,17 @@ def my_login(request):
         print(user)
 
         if user == 'student':
-            return HttpResponse("学生成功")
+            obj = HttpResponse('学生登入成功')
+            # # session 设置
+            # session_id = set_login_session(phone_number, 'student')
+            # obj.set_cookie("my_session_id", session_id)
+            return obj
         elif user == 'teacher':
-            return HttpResponse("教师成功")
+            obj = HttpResponse('教师登入成功')
+            # # session 设置
+            # session_id = set_login_session(phone_number, 'teacher')
+            # obj.set_cookie("my_session_id", session_id)
+            return obj
         else:
             return HttpResponse("失败")
 
@@ -77,7 +86,7 @@ def select_course(request):
         count = len(course_data)
         for each_data in course_data:
             temp_data = {
-                'course_type': str(each_data.coursetype),
+                'course_type': translateTypeId2Type(each_data.coursetype),
                 'start_time': each_data.coursestarttime.strftime('%Y-%m-%d %X'),
                 'end_time': each_data.courseendtime.strftime('%Y-%m-%d %X'),
                 'course_intro': each_data.courseintro,
@@ -116,7 +125,7 @@ def select_teacher(request):
             temp_data = {
                 'real_name': str(each_data.realname),
                 'intro': str(each_data.teacherintro),
-                'field': str(each_data.teacherfield),
+                'field': translateTypeId2Type(each_data.teacherfield),
                 'welcome_deg': str(each_data.teacherwelcomedeg),
             }
             data.append(temp_data)
@@ -135,12 +144,18 @@ def select_teacher(request):
 
 
 def register(request):
+    """
+    学生注册
+    @param request:
+    @return:
+    """
     if request.method == 'POST':
-        phonenumber = request.POST['temp_username']
-        userpd = request.POST['temp_password']
         uuid = request.POST['temp_uuid']
+        real_name = request.POST['temp_real_name']
+        phone_number = request.POST['temp_number']
+        user_password = request.POST['temp_password']
 
-        result = check_register(phonenumber, userpd, uuid)
+        result = check_register(uuid, real_name, phone_number, user_password)
 
         return HttpResponse(result)
 

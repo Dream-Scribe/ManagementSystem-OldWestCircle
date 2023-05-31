@@ -1,3 +1,8 @@
+import json, hashlib
+from datetime import datetime
+from index.models import Mysession
+
+
 def translateDateId2Date(date_id):
     if date_id == 1:
         return "Monday"
@@ -77,3 +82,46 @@ def translateType2TypeId(type):
         return 8
     else:
         return
+
+
+def get_current_time():
+    # 获取当前时间
+    current_time = datetime.now()
+    # 格式化为字符串
+    formatted_time = current_time.strftime('%Y-%m-%d %H:%M:%S')
+
+    return formatted_time
+
+
+def check_session(session_id=None):
+    try:
+        user = Mysession.objects.get(session_id=session_id)
+    except Exception as e:
+        print(e)
+        return 'nobody'
+
+    value = json.loads(user.session_value)
+
+    return value['power']
+
+
+def hash_password(password, salt):
+    """
+    使用 SHA-256 哈希算法
+    @param password:
+    @param salt:
+    @return:
+    """
+    salted_password = salt + password
+
+    # 创建哈希对象
+    hasher = hashlib.sha256()
+
+    # 更新哈希对象的内容
+    hasher.update(salted_password.encode('utf-8'))
+
+    # 获取哈希值
+    hashed_password = hasher.hexdigest()
+
+    # 返回哈希值
+    return hashed_password

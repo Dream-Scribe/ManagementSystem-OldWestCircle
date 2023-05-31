@@ -56,7 +56,7 @@ def booking_select(request):
             # 执行中间表的查询操作，获取数据
             booking_data = Booking.objects.all()
         elif temp_sid and temp_time:
-            print('2')
+
             booking_data = Booking.objects.filter(teacherid=temp_tid, studentid=temp_sid, bookingtime=temp_time)
         elif temp_sid:
             booking_data = Booking.objects.filter(teacherid=temp_tid, studentid=temp_sid)
@@ -154,6 +154,24 @@ def evaluate(request):
         return HttpResponse('ok')
 
     # return HttpResponse('评价')
+def evaluate_delete(request):
+    """
+       删除评价
+       @param request:
+       @return:
+       """
+    # POST请求, 业务实现
+    if request.method == 'POST':
+        temp_tid = request.POST.get('temp_teacher_id')
+        temp_sid = request.POST.get('temp_student_id')
+
+        temp_time = request.POST.get('temp_time')
+        if not all([temp_sid, temp_tid, temp_time]):
+            return HttpResponse('参数不全')
+        Teachertostudentcomment.objects.filter(studentid=Student.objects.get(studentid=temp_sid),
+                                               teacherid=Teacher.objects.get(teacherid=temp_tid),
+                                               s2tcommenttime=temp_time).delete()
+        return HttpResponse('ok')
 
 
 def timetable(request):
@@ -239,9 +257,9 @@ def course_start(request):
         temp_name = request.POST.get('temp_name')
         temp_intro = request.POST.get('temp_intro')
         temp_state = 'reviewing'
-        # 参数不全, 错误
-        if not all([temp_type]):
-            return HttpResponse('参数不全')
+        # # 参数不全, 错误
+        # if not all([temp_type]):
+        #     return HttpResponse('参数不全')
 
         course = Course.objects.create(coursestarttime=temp_stime, courseendtime=temp_etime, coursetype=temp_type,
                                        coursename=temp_name, courseintro=temp_intro, coursestate=temp_state)
@@ -284,7 +302,7 @@ def course_change(request):
             return HttpResponse('参数不全')
 
         # 更改到相应表中
-        course = Course.objects.filter(courseid=temp_cid)
+        course = Course.objects.get(courseid=temp_cid)
         if course is not None:
             if temp_stime:
                 course.update(coursestarttime=temp_stime)
@@ -330,6 +348,92 @@ def course_delete(request):
 
     return HttpResponse('删除课程')
 
+
+def class_start(request):
+    """
+        课程开设具体的一个班级
+        @param request:
+        @return:
+        """
+    # GET请求, 进入课程开设页面
+    if request.method == 'GET':
+        return render(request, 'temp_课程开设')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_cid = request.POST.get('temp_course_id')
+        temp_date = request.POST.get('temp_date')
+        temp_date = translateDate2DateId(temp_date)
+        temp_time = request.POST.get('temp_time')
+
+        if not any([temp_cid, temp_date, temp_time]):
+            return HttpResponse('参数不全')
+
+        course = Course.objects.get(courseid=temp_cid)
+        if course:
+            if not Class.objects.filter(courseid=temp_cid, classtime=temp_time, classdate=temp_date):
+                Class.objects.create(courseid=temp_cid, classtime=temp_time, classdate=temp_date, classstudentnum=0)
+                return HttpResponse('ok')
+            else:
+                return HttpResponse('已存在相应班级')
+        else:
+            return HttpResponse('不存在该课程')
+
+def class_delete(request):
+    """
+            删除具体的一个班级
+            @param request:
+            @return:
+            """
+    # GET请求, 进入课程开设页面
+    if request.method == 'GET':
+        return render(request, 'temp_删除班级')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_cid = request.POST.get('temp_class_id')
+        # 参数不全, 错误
+        if not all([temp_cid]):
+            return HttpResponse('参数不全')
+        Class.objects.get(classid=temp_cid).delete()
+        # 返回成功信息。
+        return HttpResponse('ok')
+
+    return HttpResponse('删除班级')
+
+
+def class_change(request):
+    """
+    班级更改
+    @param request:
+    @return:
+    """
+    # GET请求, 进入课程开设页面
+    if request.method == 'GET':
+        return render(request, 'temp_班级更改')
+
+    # POST请求, 业务实现
+    elif request.method == 'POST':
+        temp_cid = request.POST.get('temp_class_id')
+        temp_time = request.POST.get('temp_time')
+        temp_date = request.POST.get('temp_date')
+
+        # 参数不全, 错误
+        if not all([temp_cid]):
+            return HttpResponse('参数不全')
+
+        # 更改到相应表中
+        class_ = Class.objects.get(classid=temp_cid)
+        if class_ is not None:
+            if temp_time:
+                class_.update(classtime=temp_time)
+            if temp_date:
+                class_.update(classdate=translateDate2DateId(temp_date))
+
+        # 返回成功信息。
+        return HttpResponse('ok')
+
+    return HttpResponse('班级更改')
 
 def homework_assign(request):
     """
@@ -508,7 +612,7 @@ def activity_attend(request):
         if not all([temp_aid, temp_tid]):
             return HttpResponse('参数不全')
         elif temp_aid and temp_tid:
-            attend = TeacherAttend.objects.create(activityid=temp_aid, teacherid=temp_tid)
+            attend = Teacherattend.objects.create(activityid=temp_aid, teacherid=temp_tid)
             return HttpResponse('ok')
 
     return HttpResponse('活动参加')
@@ -532,7 +636,7 @@ def activity_cancel(request):
         if not all([temp_aid, temp_tid]):
             return HttpResponse('参数不全')
         elif temp_aid and temp_tid:
-            TeacherAttend.objects.get(activityid=temp_aid, teacherid=temp_tid).delete()
+            Teacherattend.objects.filter(activityid=temp_aid, teacherid=temp_tid).delete()
 
             return HttpResponse('ok')
 
