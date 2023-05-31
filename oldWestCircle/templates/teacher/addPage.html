@@ -4,31 +4,31 @@
         <div class="layui-form-item">
             <label class="layui-form-label required">开始时间</label>
             <div class="layui-input-block">
-                <input type="text" name="s_time" lay-verify="required" lay-reqtext="开始时间不能为空" placeholder="请输入开始时间" value="" class="layui-input">
+                <input type="datetime" id="date1" name="temp_start_time" lay-verify="required" lay-reqtext="开始时间不能为空" placeholder="请输入开始时间" value="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label required">结束时间</label>
             <div class="layui-input-block">
-                <input type="text" name="e_time" lay-verify="required" lay-reqtext="结束时间不能为空" placeholder="请输入结束时间" value="" class="layui-input">
+                <input type="datetime" id="date2" name="temp_end_time" lay-verify="required" lay-reqtext="结束时间不能为空" placeholder="请输入结束时间" value="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label required">课程类型</label>
             <div class="layui-input-block">
-                <input type="text" name="course_type" lay-verify="required" lay-reqtext="课程类型不能为空" placeholder="请输入课程类型" value="" class="layui-input">
+                <input type="text" name="temp_type" lay-verify="required" lay-reqtext="课程类型不能为空" placeholder="请输入课程类型" value="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label required">课程名</label>
             <div class="layui-input-block">
-                <input type="text" name="course_name" lay-verify="required" lay-reqtext="课程名不能为空" placeholder="请输入课程名" value="" class="layui-input">
+                <input type="text" name="temp_name" lay-verify="required" lay-reqtext="课程名不能为空" placeholder="请输入课程名" value="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label required">课程介绍</label>
             <div class="layui-input-block">
-                <input type="text" name="course_intro" lay-verify="required" lay-reqtext="课程介绍不能为空" placeholder="请输入课程介绍" value="" class="layui-input">
+                <input type="text" name="temp_intro" lay-verify="required" lay-reqtext="课程介绍不能为空" placeholder="请输入课程介绍" value="" class="layui-input">
             </div>
         </div>
 
@@ -40,11 +40,28 @@
     </div>
 </div>
 <script>
-    layui.use(['form', 'table'], function () {
+    layui.use(['form', 'table','laydate'], function () {
         var form = layui.form,
             layer = layui.layer,
             table = layui.table,
+            laydate = layui.laydate,
             $ = layui.$;
+
+        /**
+         * laydate组件
+         */
+
+         laydate.render({
+            elem:"#date1",
+            type:"datetime",
+            trigger:'click'
+         });
+
+         laydate.render({
+            elem:"#date2",
+            type:"datetime",
+            trigger:'click'
+         });
 
         /**
          * 初始化表单，要加上，不然刷新部分组件可能会不加载
@@ -56,16 +73,28 @@
 
         //监听提交
         form.on('submit(saveBtn)', function (data) {
-            var index = layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
-            }, function () {
+            // data = JSON.stringify(data.field);
 
-                // 关闭弹出层
-                layer.close(index);
-                layer.close(parentIndex);
+            $.ajax({
+                type:"POST",
+                url:'courseStart',
+                data:data.field,
+                success:function(result){
+                    var index = layer.alert(JSON.stringify(data.field), {
+                        title: '提交成功'
+                    }, function () {
 
-            });
+                        // 关闭弹出层
+                        layer.close(index);
+                        layer.close(parentIndex);
+                        console.log(result);
 
+                    })
+                },
+                error:function(e){
+                    console.log(e.responseText);
+                }
+            })
 
             return false;
         });
