@@ -1,0 +1,81 @@
+<div class="layuimini-main">
+
+    <div class="layui-form layuimini-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">管理员ID</label>
+            <div class="layui-input-block">
+                <input type="number" name="temp_admin_id" lay-verify="required" lay-reqtext="ID不能为空" placeholder="请输入ID" value="" class="layui-input">
+            </div>
+        </div>
+       
+        <div class="layui-form-item">
+            <label class="layui-form-label required">公告内容</label>
+            <div class="layui-input-block">
+                <input type="text" name="temp_content" lay-verify="required" lay-reqtext="公告内容不能为空" placeholder="请输入公告内容" value="" class="layui-input">
+            </div>
+        </div>
+        
+    </div>
+</div>
+<script>
+    layui.use(['form', 'table','laydate'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            table = layui.table,
+            laydate = layui.laydate,
+            $ = layui.$;
+
+        /**
+         * laydate组件
+         */
+
+         laydate.render({
+            elem:"#date1",
+            type:"datetime",
+            trigger:'click'
+         });
+
+         laydate.render({
+            elem:"#date2",
+            type:"datetime",
+            trigger:'click'
+         });
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+        // 当前弹出层，防止ID被覆盖
+        var parentIndex = layer.index;
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            // data = JSON.stringify(data.field);
+
+            $.ajax({
+                type:"POST",
+                url:'publish_announcement',
+                data:data.field,
+                success:function(result){
+                    var index = layer.alert(JSON.stringify(data.field), {
+                        title: '提交成功'
+                    }, function () {
+
+                        // 关闭弹出层
+                        layer.close(index);
+                        layer.close(parentIndex);
+                        console.log(result);
+
+                    })
+                },
+                error:function(e){
+                    console.log(e.responseText);
+                }
+            })
+
+            return false;
+        });
+
+    });
+</script>
