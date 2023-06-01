@@ -628,3 +628,38 @@ def course_eval_delete(request):
             comment.delete()
 
         return HttpResponse('ok')
+
+
+def select_teacher(request):
+    """
+    浏览教师信息
+    @param request:
+    @return:
+    """
+    if request.method == 'POST':
+        temp_condition = request.POST.get('temp_condition')
+
+        teacher_data = Teacher.objects.all()
+
+        data = []
+        count = len(teacher_data)
+        for each_data in teacher_data:
+            temp_data = {
+                'real_name': str(each_data.realname),
+                'intro': str(each_data.teacherintro),
+                'field': translateTypeId2Type(each_data.teacherfield),
+                'welcome_deg': str(each_data.teacherwelcomedeg),
+            }
+            data.append(temp_data)
+
+        # 将结果列表转换为JSON字符串
+        json_data = {
+            'code': 0,
+            'msg': '',
+            'count': count,
+            'data': data
+        }
+        json_data = json.dumps(json_data)
+
+        return HttpResponse(json_data, content_type='application/json')
+    return HttpResponse('this is 浏览教师信息')

@@ -20,5 +20,6 @@ urlpatterns = [
     path('classQuit', views.class_quit),
     path('homeworkSelect', views.homework_select),
     path('courseEvaluate', views.evaluate_course),
+    path('teacherSelect', views.select_teacher),
     path('courseEvalDelete', views.course_eval_delete)
 ]
