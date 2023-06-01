@@ -143,14 +143,25 @@ def evaluate(request):
             return HttpResponse('参数不全')
 
         # 添加数据到相应表
-        Teachertostudentcomment.objects.create(
+        comment = Teachertostudentcomment.objects.get(
             studentid=Student.objects.filter(studentid=temp_studentid).first(),
             teacherid=Teacher.objects.filter(teacherid=temp_tid).first(),
             t2scomment=temp_comment,
             t2sstar=temp_star,
             t2scommenttime=time
         )
-
+        if comment:
+            comment.update(t2scomment=temp_comment,
+            t2sstar=temp_star,
+            t2scommenttime=time)
+        else:
+            Teachertostudentcomment.objects.create(
+                studentid=Student.objects.filter(studentid=temp_studentid).first(),
+                teacherid=Teacher.objects.filter(teacherid=temp_tid).first(),
+                t2scomment=temp_comment,
+                t2sstar=temp_star,
+                t2scommenttime=time
+            )
         return HttpResponse('ok')
 
     # return HttpResponse('评价')

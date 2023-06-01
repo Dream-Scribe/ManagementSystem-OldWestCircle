@@ -394,13 +394,22 @@ def evaluate_teacher(request):
             return HttpResponse('参数不全')
 
             # 添加数据到相应表
-        Studenttoteachercomment.objects.update_or_create(
+        comment = Studenttoteachercomment.objects.get(
             studentid=Student.objects.get(studentid=temp_sid),
-            teacherid=Teacher.objects.get(teacherid=temp_tid),
-            s2tcomment=temp_comment,
-            s2tstar=temp_star,
-            s2tcommenttime=time
+            teacherid=Teacher.objects.get(teacherid=temp_tid)
         )
+        if comment is None:
+            Studenttoteachercomment.objects.create(
+                studentid=Student.objects.get(studentid=temp_sid),
+                teacherid=Teacher.objects.get(teacherid=temp_tid),
+                s2tstar=temp_star,
+                s2tcomment=temp_comment,
+                s2tcommenttime=time
+            )
+        else:
+            comment.update(s2tstar=temp_star,
+                s2tcomment=temp_comment,
+                s2tcommenttime=time)
         # 返回成功信息。
         return HttpResponse('ok')
 
@@ -418,12 +427,12 @@ def teacher_eval_delete(request):
         temp_tid = request.POST.get('temp_teacher_id')
         temp_sid = request.POST.get('temp_student_id')
 
-        temp_time = request.POST.get('temp_time')
-        if not all([temp_sid, temp_tid, temp_time]):
+
+        if not all([temp_sid, temp_tid]):
             return HttpResponse('参数不全')
         Studenttoteachercomment.objects.filter(studentid=Student.objects.get(studentid=temp_sid),
-                                               teacherid=Teacher.objects.get(teacherid=temp_tid),
-                                               s2tcommenttime=temp_time).delete()
+                                               teacherid=Teacher.objects.get(teacherid=temp_tid)
+                                               ).delete()
         return HttpResponse('ok')
 
 
