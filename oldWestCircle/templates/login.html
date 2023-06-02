@@ -41,18 +41,15 @@
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-icon layui-icon-username" for="username"></label>
-                    <input type="text" name="username" lay-verify="required|account" placeholder="用户名或者邮箱" autocomplete="off" class="layui-input" value="admin">
+                    <input type="text" name="temp_username" lay-verify="required|account" placeholder="用户名" autocomplete="off" class="layui-input" value="">
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-icon layui-icon-password" for="password"></label>
-                    <input type="password" name="password" lay-verify="required|password" placeholder="密码" autocomplete="off" class="layui-input" value="123456">
+                    <input type="password" name="temp_password" lay-verify="required|password" placeholder="密码" autocomplete="off" class="layui-input" value="">
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-icon layui-icon-vercode" for="captcha"></label>
-                    <input type="text" name="captcha" lay-verify="required|captcha" placeholder="图形验证码" autocomplete="off" class="layui-input verification captcha" value="xszg">
-                    <div class="captcha-img">
-                        <img id="captchaPic" src="/static/images/captcha.jpg">
-                    </div>
+                    <input type="radio" name="temp_type" value="student" title="学生" checked>
+                    <input type="radio" name="temp_type" value="teacher" title="教师">
                 </div>
                 <div class="layui-form-item">
                     <input type="checkbox" name="rememberMe" value="true" lay-skin="primary" title="记住密码">
@@ -67,6 +64,7 @@
 <script src="/static/lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
 <script src="/static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script src="/static/lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
+<script src="/static/js/myCookie.js" charset="utf-8"></script>
 <script>
     layui.use(['form'], function () {
         var form = layui.form,
@@ -85,23 +83,23 @@
 
         // 进行登录操作
         form.on('submit(login)', function (data) {
-            data = data.field;
-            if (data.username == '') {
-                layer.msg('用户名不能为空');
-                return false;
-            }
-            if (data.password == '') {
-                layer.msg('密码不能为空');
-                return false;
-            }
-            if (data.captcha == '') {
-                layer.msg('验证码不能为空');
-                return false;
-            }
-            layer.msg('登录成功', function () {
-                window.location = '/static/index.html';
-            });
-            return false;
+            
+
+            console.log(data.field);
+
+            $.ajax({
+                type:"POST",
+                url:"login",
+                data:data.field,
+                success:function(result) {
+                    alert(result);
+                }
+            })
+
+            // layer.msg('登录成功', function () {
+            //     window.location = '/static/index.html';
+            // });
+            // return false;
         });
     });
 </script>
