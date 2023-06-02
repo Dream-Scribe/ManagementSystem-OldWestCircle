@@ -92,12 +92,12 @@
                 success:function(result) {
                     alert(result)
                     if(result.responseText != '失败'){
-                        createCookie('user',data.temp_username);
-                        createCookie('user_type',data.temp_type);
+                        createCookie('user',data.field.temp_username);
+                        createCookie('user_type',data.field.temp_type);
                     
-                        if(data.temp_type == 'student'){
+                        if(data.field.temp_type == 'student'){
                             window.location.href = '../student/index'
-                        }else if(data.temp_type == 'teacher'){
+                        }else if(data.field.temp_type == 'teacher'){
                             window.location.href = '../teacher/index'
                         }
                     }else{
