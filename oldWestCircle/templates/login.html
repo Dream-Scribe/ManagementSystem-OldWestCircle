@@ -35,7 +35,7 @@
 <div class="layui-container">
     <div class="admin-login-background">
         <div class="layui-form login-form">
-            <form class="layui-form" action="">
+            <div class="layui-form" action="">
                 <div class="layui-form-item logo-title">
                     <h1>登录</h1>
                 </div>
@@ -57,7 +57,7 @@
                 <div class="layui-form-item">
                     <button class="layui-btn layui-btn layui-btn-normal layui-btn-fluid" lay-submit="" lay-filter="login">登 入</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -66,12 +66,13 @@
 <script src="/static/lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
 <script src="/static/js/myCookie.js" charset="utf-8"></script>
 <script>
-    layui.use(['form'], function () {
+    layui.use(['form','jquery'], function () {
         var form = layui.form,
-            layer = layui.layer;
+            layer = layui.layer,
+            $ = layui.$;
 
         // 登录过期的时候，跳出ifram框架
-        if (top.location != self.location) top.location = self.location;
+        //if (top.location != self.location) top.location = self.location;
 
         // 粒子线条背景
         $(document).ready(function(){
@@ -83,28 +84,28 @@
 
         // 进行登录操作
         form.on('submit(login)', function (data) {
-            
-
-            console.log(data.field);
-
             $.ajax({
                 type:"POST",
                 url:"login",
                 data:data.field,
+                dataType:'text',
                 success:function(result) {
                     alert(result)
-                    if(result != '失败'){
+                    if(result.responseText != '失败'){
                         createCookie('user',data.temp_username);
                         createCookie('user_type',data.temp_type);
                     
                         if(data.temp_type == 'student'){
-                            window.location.href = 'student/index'
+                            window.location.href = '../student/index'
                         }else if(data.temp_type == 'teacher'){
-                            window.location.href = 'teacher/index'
+                            window.location.href = '../teacher/index'
                         }
+                    }else{
+                        window.location.reload(true);
                     }
                 },
                 error:function(e){
+                    alert(e)
                     console.log(e.responseText);
                 }
             })
