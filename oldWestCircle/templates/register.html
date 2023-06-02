@@ -40,25 +40,27 @@
                     <h1>登录</h1>
                 </div>
                 <div class="layui-form-item">
+                    <label class="layui-icon layui-icon-note" for="username"></label>
+                    <input type="text" name="temp_uuid" lay-verify="required|account" placeholder="用户ID" autocomplete="off" class="layui-input" value="">
+                </div>
+                <div class="layui-form-item">
                     <label class="layui-icon layui-icon-username" for="username"></label>
-                    <input type="text" name="temp_username" lay-verify="required|account" placeholder="用户名" autocomplete="off" class="layui-input" value="">
+                    <input type="text" name="temp_real_name" lay-verify="required" placeholder="姓名" autocomplete="off" class="layui-input" value="">
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-icon layui-icon-cellphone" for="username"></label>
+                    <input type="number" name="temp_number" lay-verify="required" placeholder="手机号" autocomplete="off" class="layui-input" value="">
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-icon layui-icon-password" for="password"></label>
-                    <input type="password" name="temp_password" lay-verify="required|password" placeholder="密码" autocomplete="off" class="layui-input" value="">
+                    <input type="password" id="password" name="temp_password" lay-verify="required|password" placeholder="密码" autocomplete="off" class="layui-input" value="">
                 </div>
                 <div class="layui-form-item">
-                    <input type="radio" name="temp_type" value="student" title="学生" checked>
-                    <input type="radio" name="temp_type" value="teacher" title="教师">
+                    <label class="layui-icon layui-icon-password" for="password"></label>
+                    <input type="password" name="verify_password" lay-verify="required|verifyPass" placeholder="确认密码" autocomplete="off" class="layui-input" value="">
                 </div>
                 <div class="layui-form-item">
-                    <input type="checkbox" name="rememberMe" value="true" lay-skin="primary" title="记住密码">
-                </div>
-                <div class="layui-form-item">
-                    <button class="layui-btn layui-btn layui-btn-normal layui-btn-fluid" lay-submit="" lay-filter="login">登 入</button>
-                </div>
-                <div class="layui-form-item">
-                    <button id="to-register" class="layui-btn layui-btn layui-btn-normal layui-btn-fluid" lay-submit="" lay-filter="register">没 有 账 号？ 去 注 册</button>
+                    <button class="layui-btn layui-btn layui-btn-normal layui-btn-fluid" lay-submit="" lay-filter="register">注 册</button>
                 </div>
             </div>
         </div>
@@ -83,32 +85,26 @@
                 dotColor:'#7ec7fd',
                 lineColor:'#7ec7fd'
             });
-
-            $("#to-register").click(function(){
-                window.location.href = 'register';
-            })
         });
 
-        
+        form.verify({
+            verifyPass: function(value) {
+                if($('#password').val() !== value){
+                    return "两次输入密码不一致"
+                }
+            }
+        })
 
         // 进行登录操作
-        form.on('submit(login)', function (data) {
+        form.on('submit(register)', function (data) {
             $.ajax({
                 type:"POST",
-                url:"login",
+                url:"register",
                 data:data.field,
-                dataType:'text',
                 success:function(result) {
                     alert(result)
-                    if(result.responseText != '失败'){
-                        createCookie('user',data.field.temp_username);
-                        createCookie('user_type',data.field.temp_type);
-                    
-                        if(data.field.temp_type == 'student'){
-                            window.location.href = '../student/index'
-                        }else if(data.field.temp_type == 'teacher'){
-                            window.location.href = '../teacher/index'
-                        }
+                    if(result.responseText == '注册成功'){
+                        window.location.href="../"
                     }else{
                         window.location.reload(true);
                     }
