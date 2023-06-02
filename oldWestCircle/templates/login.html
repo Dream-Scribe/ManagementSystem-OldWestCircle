@@ -92,7 +92,20 @@
                 url:"login",
                 data:data.field,
                 success:function(result) {
-                    alert(result);
+                    alert(result)
+                    if(result != '失败'){
+                        createCookie('user',data.temp_username);
+                        createCookie('user_type',data.temp_type);
+                    
+                        if(data.temp_type == 'student'){
+                            window.location.href = 'student/index'
+                        }else if(data.temp_type == 'teacher'){
+                            window.location.href = 'teacher/index'
+                        }
+                    }
+                },
+                error:function(e){
+                    console.log(e.responseText);
                 }
             })
 
