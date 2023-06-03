@@ -811,6 +811,7 @@ def student_select(request):
             student_id = each_data.studentid
             real_name = each_data.realname
             stu_class = Studyingat.objects.filter(studentid=student_id)
+            class_id = None
             for stu_class_data in stu_class:
                 class_id = stu_class_data.classid.classid
 
