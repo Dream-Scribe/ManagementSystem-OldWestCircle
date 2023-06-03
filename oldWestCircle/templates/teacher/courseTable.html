@@ -128,10 +128,6 @@
                 $(window).on("resize", function () {
                     layer.full(index);
                 });
-            } else if (obj.event === 'delete') {  // 监听删除操作
-                var checkStatus = table.checkStatus('currentTableId')
-                    , data = checkStatus.data;
-                layer.alert(JSON.stringify(data));
             }
         });
 
@@ -144,7 +140,7 @@
             var data = obj.data;
             if (obj.event === 'edit') {
 
-                var content = miniPage.getHrefContent('page/table/add.html');
+                var content = miniPage.getHrefContent('addPage');
                 var openWH = miniPage.getOpenWidthHeight();
 
                 var index = layer.open({
@@ -166,9 +162,15 @@
                     obj.del();
                     $.ajax({
                         type:"POST",
-                        url:"course_delete",
+                        url:"courseDelete",
                         data:{
-                            temp_course_id:data.field.c
+                            temp_course_id:data.course_id
+                        },
+                        success:function(result){
+                            alert("删除成功")
+                        },
+                        error:function(e){
+                            console.log(e)
                         }
                     })
                     layer.close(index);
