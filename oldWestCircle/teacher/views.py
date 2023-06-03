@@ -23,6 +23,8 @@ def applyTable(request):
 def studentTable(request):
     return render(request, 'teacher/studentTable.html')
 
+def classTable(request):
+    return render(request, "teacher/classTable.html")
 
 def homepage(request):
     return render(request, 'teacher/homepage.html')

@@ -65,7 +65,7 @@
         table.render({
             elem: '#currentTableId',
             method:'POST',
-            url: 'timetable',
+            url: 'classSelect',
             toolbar: '#toolbarDemo',
             defaultToolbar: ['filter', 'exports', 'print', {
                 title: '提示',
@@ -74,11 +74,11 @@
             }],
             cols: [[
                 {type: "checkbox", width: 50},
-                {field: 'course_name', width: 160, title: '课程名', sort: true},
-                {field: 'course_time', width: 160, title: '课程时间'},
-                {field: 'course_start_time', width: 160, title: '开始时间'},
-                {field: 'course_end_time', width: 160, title: '结束时间'},
-                {field: 'course_type',width: 160, title: '课程类型'},
+                {field: 'class_id', width: 160, title: '班级ID', sort: true},
+                {field: 'course_id', width: 160, title: '课程ID'},
+                {field: 'student_num', width: 160, title: '学生数量'},
+                {field: 'class_date', width: 160, title: '班级日期'},
+                {field: 'class_time',width: 160, title: '班级时间'},
                 {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
             ]],
             limits: [10, 15, 20, 25, 50, 100],
