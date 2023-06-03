@@ -22,6 +22,26 @@
           "target": "_self"
         },
         {
+          "title": "活动与公告",
+          "href": "",
+          "icon": "fa fa-window-maximize",
+          "target": "_self",
+          "child":[
+            {
+              "title": "活动查看",
+              "href": "activityTable",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "公告查看",
+              "href": "announcementTable",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+          ]
+        },
+        {
           "title": "学生管理",
           "href": "",
           "icon": "fa fa-window-maximize",
