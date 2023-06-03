@@ -65,7 +65,7 @@
         table.render({
             elem: '#currentTableId',
             method:'POST',
-            url: 'timetable',
+            url: 'announcemenTable_select',
             toolbar: '#toolbarDemo',
             defaultToolbar: ['filter', 'exports', 'print', {
                 title: '提示',
@@ -73,12 +73,11 @@
                 icon: 'layui-icon-tips'
             }],
             cols: [[
-                {type: "checkbox", width: 50},
-                {field: 'course_name', width: 160, title: '课程名', sort: true},
-                {field: 'course_time', width: 160, title: '课程时间'},
-                {field: 'course_start_time', width: 160, title: '开始时间'},
-                {field: 'course_end_time', width: 160, title: '结束时间'},
-                {field: 'course_type',width: 160, title: '课程类型'},
+            {type: "checkbox", width: 50},
+                {field: 'announcement_id', width: 160, title: '公告ID', sort: true},
+                {field: 'announcement_admin_id', width: 160, title: '公告管理员ID'},
+                {field: 'announcement_content', width: 160, title: '公告内容'},
+                {field: 'announcement_time', width: 160, title: '公告时间'},
                 {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
             ]],
             limits: [10, 15, 20, 25, 50, 100],
@@ -112,7 +111,7 @@
          */
         table.on('toolbar(currentTableFilter)', function (obj) {
             if (obj.event === 'add') {   // 监听添加操作
-                var content = miniPage.getHrefContent('addPage_course');
+                var content = miniPage.getHrefContent('addPage_announcement');
                 var openWH = miniPage.getOpenWidthHeight();
 
                 var index = layer.open({

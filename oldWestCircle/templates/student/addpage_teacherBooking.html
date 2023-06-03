@@ -1,0 +1,103 @@
+<div class="layuimini-main">
+
+    <div class="layui-form layuimini-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">学生ID</label>
+            <div class="layui-input-block">
+                <input type="number" name="temp_student_id" lay-verify="required" lay-reqtext="学生ID不能为空" placeholder="请输入学生ID" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">教师ID</label>
+            <div class="layui-input-block">
+                <input type="number" name="temp_teacher_id" lay-verify="required" lay-reqtext="教师ID不能为空" placeholder="请输入教师ID" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">时间</label>
+            <div class="layui-input-block">
+                <input type="datetime" name="temp_time" lay-verify="required" lay-reqtext="时间不能为空" placeholder="请输入时间" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">地点</label>
+            <div class="layui-input-block">
+                <input type="text" name="temp_place" lay-verify="required" lay-reqtext="地点不能为空" placeholder="请输入地点" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">内容</label>
+            <div class="layui-input-block">
+                <input type="text" name="temp_description" lay-verify="required" lay-reqtext="内容不能为空" placeholder="请输入内容" value="" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'table','laydate'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            table = layui.table,
+            laydate = layui.laydate,
+            $ = layui.$;
+
+        /**
+         * laydate组件
+         */
+
+         laydate.render({
+            elem:"#date1",
+            type:"datetime",
+            trigger:'click'
+         });
+
+         laydate.render({
+            elem:"#date2",
+            type:"datetime",
+            trigger:'click'
+         });
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+        // 当前弹出层，防止ID被覆盖
+        var parentIndex = layer.index;
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            // data = JSON.stringify(data.field);
+
+            $.ajax({
+                type:"POST",
+                url:'booking',
+                data:data.field,
+                success:function(result){
+                    var index = layer.alert(JSON.stringify(data.field), {
+                        title: '提交成功'
+                    }, function () {
+
+                        // 关闭弹出层
+                        layer.close(index);
+                        layer.close(parentIndex);
+                        console.log(result);
+
+                    })
+                },
+                error:function(e){
+                    console.log(e.responseText);
+                }
+            })
+
+            return false;
+        });
+
+    });
+</script>

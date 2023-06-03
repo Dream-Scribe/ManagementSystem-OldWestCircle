@@ -17,9 +17,23 @@
       "child": [
         {
           "title": "主页",
-          "href": "homepage",
+          "href": "",
           "icon": "fa fa-home",
-          "target": "_self"
+          "target": "_self",
+          "child": [
+            {
+              "title": "活动",
+              "href": "activityTable_stu",
+              "icon": "fa fa-list-alt",
+              "target": "_self"
+            },
+            {
+              "title": "公告",
+              "href": "announcementTable_stu",
+              "icon": "fa fa-list-alt",
+              "target": "_self"
+            }
+          ]
         },
         {
           "title": "课程查看",
@@ -41,7 +55,15 @@
             }
           ]
 
+        },
+        {
+          "title": "教师信息",
+          "href": "teacherTable",
+          "icon": "fa fa-window-maximize",
+          "target": "_self"
+
         }
+
       ]
     }
   ]

@@ -13,7 +13,13 @@ urlpatterns = [
     path('userDelete', views.user_delete),
     path('activityDelete', views.activity_delete),
     path('announcementDelete', views.announcement_delete),
-    path('admin', views.admin),
+    path('index', views.index),
     path('ContentPublishTable',views.ContentPublishTable),
     path('UserManageTable',views.UserManageTable),
+    path('activityTable',views.activityTable),
+    path('announcementTable',views.announcementTable),
+    path('addpage_activity',views.addpage_activity),
+    path('addpage_announcement',views.addpage_announcement),
+    path('addpage_user',views.addpage_user),
+    path('addpageTest',views.addpageTest)
 ]

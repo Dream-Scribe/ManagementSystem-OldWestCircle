@@ -8,12 +8,29 @@ from utils import get_current_time
 # Create your views here.
 
 
-def admin(request):
+def index(request):
     return render(request,'admin/index.html')
 def ContentPublishTable(request):
     return render(request,'admin/ContentPublishTable.html')
 def UserManageTable(request):
     return render(request,'admin/UserManageTable.html')
+def activityTable(request):
+    return render(request,'admin/activityTable.html')
+def announcementTable(request):
+    return render(request,'admin/announcementTable.html')
+def addpage_activity(request):
+    return render(request,'admin/addpage_acvitity.html')
+def addpage_announcement(request):
+    return render(request,'admin/addpage_announcement.html')
+def addpage_user(request):
+    return render(request,'admin/addpage_user.html')
+def addpageTest(request):
+    return render(request,'admin/addpageTest.html')
+
+
+
+
+
 
 
 def admin_login(request):

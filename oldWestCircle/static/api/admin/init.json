@@ -22,8 +22,14 @@
           "target": "_self"
         },
         {
-          "title": "内容发布",
-          "href": "ContentPublishTable",
+          "title": "活动发布",
+          "href": "activityTable",
+          "icon": "fa fa-superpowers",
+          "target": "_self"
+        }
+        {
+          "title": "公告发布",
+          "href": "announcementTable",
           "icon": "fa fa-superpowers",
           "target": "_self"
         }

@@ -22,6 +22,25 @@ def MyCourseTable(request):
 def homepage(request):
     return render(request, 'student/homepage.html')
 
+def teacherTable(request):
+    return render(request, 'student/teacherTable.html')
+
+def activityTable_stu(request):
+    return render(request, 'student/activityTable_stu.html')
+
+def announcementTable_stu(request):
+    return render(request, 'student/announcementTable_stu.html')
+
+def addpage_activity_stu(request):
+    return render(request, 'student/addpage_activity_stu.html')
+
+def addpage_teacherBooking(request):
+    return render(request, 'student/addpage_teacherBooking.html')
+
+
+
+
+
 
 def activity_attend(request):
     """
