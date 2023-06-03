@@ -23,8 +23,6 @@ def applyTable(request):
 def studentTable(request):
     return render(request, 'teacher/studentTable.html')
 
-def classTable(request):
-    return render(request, "teacher/classTable.html")
 
 def homepage(request):
     return render(request, 'teacher/homepage.html')
@@ -782,6 +780,44 @@ def announcement_show(request):
                 'announcement_id': announcement_id,
                 'content': content,
                 'publish_time': time
+            })
+
+        # 将结果列表转换为JSON字符串
+        json_data = {
+            'code': 0,
+            'msg': '',
+            'count': count,
+            'data': data
+        }
+        json_data = json.dumps(json_data)
+
+        return HttpResponse(json_data, content_type='application/json')
+
+
+def student_select(request):
+    """
+        学生查询
+        @param request:
+        @return:
+    """
+    # POST请求, 业务实现
+    if request.method == 'POST':
+
+        students = Student.objects.all()
+
+        data = []
+        count = len(students)
+        for each_data in students:
+            student_id = each_data.studentid
+            real_name = each_data.realname
+            stu_class = Studyingat.objects.filter(studentid=student_id)
+            for stu_class_data in stu_class:
+                class_id = stu_class_data.classid.classid
+
+            data.append({
+                'student_id': student_id,
+                'real_name': real_name,
+                'class_id': class_id
             })
 
         # 将结果列表转换为JSON字符串

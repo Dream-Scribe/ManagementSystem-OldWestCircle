@@ -21,7 +21,6 @@ urlpatterns = [
     path('classChange', views.class_change),
     path('classDelete', views.class_delete),
     path('classSelect', views.class_select),
-    path('classTable',views.classTable),
     path('homeworkAssign', views.homework_assign),
     path('homeworkChange', views.homework_change),
     path('homeworkDelete', views.homework_delete),
@@ -29,5 +28,6 @@ urlpatterns = [
     path('activityShow', views.activity_show),
     path('activityAttend', views.activity_attend),
     path('activityCancel', views.activity_cancel),
+    path('studentSelect', views.student_select),
     path('announceShow', views.announcement_show)
 ]
