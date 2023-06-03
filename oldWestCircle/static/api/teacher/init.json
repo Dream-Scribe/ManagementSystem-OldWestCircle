@@ -46,6 +46,12 @@
           "href": "courseTable",
           "icon": "fa fa-gears",
           "target": "_self"
+        },
+        {
+          "title": "班级管理",
+          "href": "classTable",
+          "icon": "fa fa-gears",
+          "target": "_self"
         }
       ]
     }
