@@ -65,7 +65,7 @@
         table.render({
             elem: '#currentTableId',
             method:'POST',
-            url: 'announceShow',
+            url: 'homeworkSelect',
             toolbar: '#toolbarDemo',
             defaultToolbar: ['filter', 'exports', 'print', {
                 title: '提示',
@@ -73,10 +73,13 @@
                 icon: 'layui-icon-tips'
             }],
             cols: [[
-            {type: "checkbox", width: 50},
-                {field: 'announcement_id', width: 160, title: '公告ID', sort: true},
-                {field: 'content', width: 480, title: '公告内容'},
-                {field: 'publish_time', width: 160, title: '公告时间'},
+                {type: "checkbox", width: 50},
+                {field: 'homework_id', width: 160, title: '作业ID', sort: true},
+                {field: 'class_id', width: 160, title: '班级ID'},
+                {field: 'course_name', width: 160, title: '课程名'},
+                {field: 'start_time', width: 160, title: '开始时间'},
+                {field: 'end_time',width: 160, title: '结束时间'},
+                {field: 'content',width: 160, title: '内容'},
                 {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
             ]],
             limits: [10, 15, 20, 25, 50, 100],
@@ -110,7 +113,7 @@
          */
         table.on('toolbar(currentTableFilter)', function (obj) {
             if (obj.event === 'add') {   // 监听添加操作
-                var content = miniPage.getHrefContent('addPage_announcement');
+                var content = miniPage.getHrefContent('addHomework');
                 var openWH = miniPage.getOpenWidthHeight();
 
                 var index = layer.open({

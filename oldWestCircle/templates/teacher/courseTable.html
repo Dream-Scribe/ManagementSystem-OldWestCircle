@@ -162,8 +162,15 @@
                 });
                 return false;
             } else if (obj.event === 'delete') {
-                layer.confirm('真的删除行么', function (index) {
+                layer.confirm('真的要删除么', function (index) {
                     obj.del();
+                    $.ajax({
+                        type:"POST",
+                        url:"course_delete",
+                        data:{
+                            temp_course_id:data.field.c
+                        }
+                    })
                     layer.close(index);
                 });
             }

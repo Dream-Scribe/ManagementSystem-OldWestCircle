@@ -33,6 +33,17 @@ def addPage(request):
 def homework(request):
     return render(request, 'teacher/homework.html')
 
+def addHomework(request):
+    return render(request, 'teacher/addHomework.html')
+
+def activityTable(request):
+    return render(request, 'teacher/activityTable.html')
+
+def announcementTable(request):
+    return render(request, "teacher/announcementTable.html")
+
+def classTable(request):
+    return render(request,"teacher/classTable.html")
 
 def booking_select(request):
     """

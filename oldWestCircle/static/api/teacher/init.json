@@ -72,6 +72,12 @@
           "href": "classTable",
           "icon": "fa fa-gears",
           "target": "_self"
+        },
+        {
+          "title": "作业管理",
+          "href": "homework",
+          "icon": "fa fa-gears",
+          "target": "_self"
         }
       ]
     }
