@@ -20,6 +20,7 @@ urlpatterns = [
     path('classStart', views.class_start),
     path('classChange', views.class_change),
     path('classDelete', views.class_delete),
+    path('classSelect', views.class_select),
     path('homeworkAssign', views.homework_assign),
     path('homeworkChange', views.homework_change),
     path('homeworkDelete', views.homework_delete),

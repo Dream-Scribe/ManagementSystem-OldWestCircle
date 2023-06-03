@@ -21,5 +21,6 @@ urlpatterns = [
     path('homeworkSelect', views.homework_select),
     path('courseEvaluate', views.evaluate_course),
     path('teacherSelect', views.select_teacher),
+    path('classSelect', views.class_select),
     path('courseEvalDelete', views.course_eval_delete)
 ]

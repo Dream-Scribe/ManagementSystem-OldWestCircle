@@ -663,3 +663,46 @@ def select_teacher(request):
 
         return HttpResponse(json_data, content_type='application/json')
     return HttpResponse('this is 浏览教师信息')
+
+
+def class_select(request):
+    """
+    班级查看
+    @param request:
+    @return:
+    """
+    # POST请求, 业务实现
+    if request.method == 'POST':
+
+        class_ = Class.objects.all()
+
+        data = []
+        count = len(class_)
+
+        for each_data in class_:
+            class_id = each_data.classid
+            course_id = translateTypeId2Type(each_data.courseid.coursetype)
+            student_num = each_data.classstudentnum
+            class_date = translateDateId2Date(each_data.classdate)
+            class_time = each_data.classtime
+
+            data.append({
+                'class_id': class_id,
+                'course_id': course_id,
+                'student_num': student_num,
+                'class_date': class_date,
+                'class_time': class_time,
+            })
+
+        # 将结果列表转换为JSON字符串
+        json_data = {
+            'code': 0,
+            'msg': '',
+            'count': count,
+            'data': data
+        }
+        json_data = json.dumps(json_data)
+
+        return HttpResponse(json_data, content_type='application/json')
+
+    return HttpResponse('班级查看')
