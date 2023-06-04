@@ -37,6 +37,10 @@ def addpage_activity_stu(request):
 def addpage_teacherBooking(request):
     return render(request, 'student/addpage_teacherBooking.html')
 
+def homework_stu(request):
+    return render(request, 'student/homework_stu.html')
+
+
 
 
 

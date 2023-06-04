@@ -23,10 +23,11 @@ urlpatterns = [
     path('teacherEvalDelete', views.teacher_eval_delete),
     path('classChoose', views.class_choose),
     path('classQuit', views.class_quit),
-    path('homeworkSelect', views.homework_select),
+    path('homework_select', views.homework_select),
     path('courseEvaluate', views.evaluate_course),
     path('courseSelect', views.course_select),
     path('teacherSelect', views.select_teacher),
     path('classSelect', views.class_select),
-    path('courseEvalDelete', views.course_eval_delete)
+    path('courseEvalDelete', views.course_eval_delete),
+    path('homework_stu', views.homework_stu)
 ]
