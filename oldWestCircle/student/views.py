@@ -577,6 +577,61 @@ def homework_select(request):
             return HttpResponse(json_data, content_type='application/json')
 
 
+def course_select(request):
+    """
+        课程查看
+        @param request:
+        @return:
+    """
+    # POST请求, 业务实现
+    if request.method == 'POST':
+
+        courses = Course.objects.all()
+
+        data = []
+        count = len(courses)
+
+        for each_data in courses:
+            course_id = each_data.courseid
+            course_type = translateTypeId2Type(each_data.coursetype)
+            start_time = each_data.coursestarttime
+            end_time = each_data.courseendtime
+            register_num = each_data.courseregisternum
+            favor_deg = each_data.coursefavordeg
+            intro = each_data.courseintro
+            state = each_data.coursestate
+            name = each_data.coursename
+            if start_time:
+                start_time = start_time.strftime('%Y-%m-%d %X')
+
+            if end_time:
+                end_time = end_time.strftime('%Y-%m-%d %X')
+            data.append({
+                'course_id': course_id,
+                'course_type': course_type,
+                'start_time': start_time,
+                'end_time': end_time,
+                'register_num': str(register_num),
+                'favor_deg': str(favor_deg),
+                'intro': intro,
+                'state': state,
+                'name': name,
+            })
+
+        # 将结果列表转换为JSON字符串
+        json_data = {
+            'code': 0,
+            'msg': '',
+            'count': count,
+            'data': data
+        }
+        json_data = json.dumps(json_data)
+
+        return HttpResponse(json_data, content_type='application/json')
+
+    return HttpResponse('课程查看')
+
+
 def evaluate_course(request):
     """
     给予课程评价
@@ -664,6 +719,7 @@ def select_teacher(request):
         count = len(teacher_data)
         for each_data in teacher_data:
             temp_data = {
+                'teacher_id': str(each_data.teacherid),
                 'real_name': str(each_data.realname),
                 'intro': str(each_data.teacherintro),
                 'field': translateTypeId2Type(each_data.teacherfield),
