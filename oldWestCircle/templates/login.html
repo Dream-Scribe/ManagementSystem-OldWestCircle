@@ -103,6 +103,7 @@
                     if(result.responseText != '失败'){
                         createCookie('user',data.field.temp_username);
                         createCookie('user_type',data.field.temp_type);
+                        createCookie('user_id',result.responseText);
                     
                         if(data.field.temp_type == 'student'){
                             window.location.href = '../student/index'
