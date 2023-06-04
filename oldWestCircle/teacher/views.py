@@ -342,6 +342,9 @@ def course_start(request):
         # if not all([temp_type]):
         #     return HttpResponse('参数不全')
 
+        print(temp_stime)
+        print(type(temp_stime))
+
         course = Course.objects.create(coursestarttime=temp_stime, courseendtime=temp_etime, coursetype=temp_type,
                                        coursename=temp_name, courseintro=temp_intro, coursestate=temp_state)
 
