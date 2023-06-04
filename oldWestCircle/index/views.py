@@ -34,17 +34,17 @@ def my_login(request):
         temp_type = request.POST.get('temp_type')
 
         # 验证登陆信息是否完整
-        user = check_login(phone_number, password, temp_type)
-        print(user)
+        user, user_id = check_login(phone_number, password, temp_type)
+        print(user, user_id)
 
         if user == 'student':
-            obj = HttpResponse('学生登入成功')
+            obj = HttpResponse(user_id)
             # # session 设置
             # session_id = set_login_session(phone_number, 'student')
             # obj.set_cookie("my_session_id", session_id)
             return obj
         elif user == 'teacher':
-            obj = HttpResponse('教师登入成功')
+            obj = HttpResponse(user_id)
             # # session 设置
             # session_id = set_login_session(phone_number, 'teacher')
             # obj.set_cookie("my_session_id", session_id)

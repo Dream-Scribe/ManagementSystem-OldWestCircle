@@ -7,7 +7,7 @@ from utils import get_current_time, hash_password
 
 def check_login(phone_number, password, login_type):
     if not all([phone_number, password, login_type]):
-        return None
+        return None, None
 
     # # 对于 student 与 teacher ，可使用 register_time 作为 salt
     # password = hash_password(password, register_time)
@@ -19,7 +19,8 @@ def check_login(phone_number, password, login_type):
             student = None
 
         if student is not None:
-            return 'student'
+            student_id = student.studentid
+            return 'student', student_id
 
     elif login_type == 'teacher':
         try:
@@ -28,7 +29,9 @@ def check_login(phone_number, password, login_type):
             teacher = None
 
         if teacher is not None:
-            return 'teacher'
+            teacher_id = teacher.teacherid
+            return 'teacher', teacher_id
+    return None, None
 
 
 def check_register(uuid, real_name, phone_number, password):
