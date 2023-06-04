@@ -81,14 +81,18 @@ def booking_select(request):
         data = []
         count = len(booking_data)
         for st_data in booking_data:
+            student_id = st_data.studentid.studentid
             student_name = st_data.studentid.realname
+            teacher_id = st_data.teacherid.teacherid
             teacher_name = st_data.teacherid.realname
             bookdescription = st_data.bookdescription
             time = st_data.booktime
             if time:
                 time = time.strftime('%Y-%m-%d %X')
             data.append({
+                'student_id': student_id,
                 'student_name': student_name,
+                'teacher_id': teacher_id,
                 'teacher_name': teacher_name,
                 'bookdescription': bookdescription,
                 'time': time
@@ -259,6 +263,59 @@ def timetable(request):
     return HttpResponse('课表')
 
 
+def course_select(request):
+    """
+        课程查看
+        @param request:
+        @return:
+    """
+    # POST请求, 业务实现
+    if request.method == 'POST':
+
+        courses = Course.objects.all()
+
+        data = []
+        count = len(courses)
+
+        for each_data in courses:
+            course_id = each_data.courseid
+            course_type = translateTypeId2Type(each_data.coursetype)
+            start_time = each_data.coursestarttime
+            end_time = each_data.courseendtime
+            register_num = each_data.courseregisternum
+            favor_deg = each_data.coursefavordeg
+            intro = each_data.courseintro
+            state = each_data.coursestate
+            name = each_data.coursename
+            if start_time:
+                start_time = start_time.strftime('%Y-%m-%d %X')
+
+            if end_time:
+                end_time = end_time.strftime('%Y-%m-%d %X')
+            data.append({
+                'course_id': course_id,
+                'course_type': course_type,
+                'start_time': start_time,
+                'end_time': end_time,
+                'register_num': str(register_num),
+                'favor_deg': str(favor_deg),
+                'intro': intro,
+                'state': state,
+                'name': name,
+            })
+
+        # 将结果列表转换为JSON字符串
+        json_data = {
+            'code': 0,
+            'msg': '',
+            'count': count,
+            'data': data
+        }
+        json_data = json.dumps(json_data)
+
+        return HttpResponse(json_data, content_type='application/json')
+
+
 def course_start(request):
     """
     课程开设
@@ -353,12 +410,8 @@ def course_delete(request):
     @param request:
     @return:
     """
-    # GET请求, 进入课程删除页面
-    if request.method == 'GET':
-        return render(request, 'temp_课程删除')
-
     # POST请求, 业务实现
-    elif request.method == 'POST':
+    if request.method == 'POST':
         temp_cid = request.POST.get('temp_course_id')
 
         # 参数不全, 错误

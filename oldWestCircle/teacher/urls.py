@@ -33,5 +33,6 @@ urlpatterns = [
     path('activityAttend', views.activity_attend),
     path('activityCancel', views.activity_cancel),
     path('studentSelect', views.student_select),
+    path('courseSelect', views.course_select),
     path('announceShow', views.announcement_show)
 ]
