@@ -225,6 +225,7 @@ def timetable(request):
         data = []
         count = len(timetable_data)
         for time_data in timetable_data:
+            course_id = time_data.courseid.courseid
             course_name = time_data.courseid.coursename
             class_set = Class.objects.filter(courseid=time_data.courseid)
             course_time = []
@@ -242,6 +243,7 @@ def timetable(request):
             course_type = time_data.courseid.coursetype
             course_type = translateTypeId2Type(course_type)
             data.append({
+                'course_id': course_id,
                 'course_name': course_name,
                 'course_time': course_time,
                 'course_start_time': stime,
