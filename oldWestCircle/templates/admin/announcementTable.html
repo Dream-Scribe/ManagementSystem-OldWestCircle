@@ -111,11 +111,11 @@
          */
         table.on('toolbar(currentTableFilter)', function (obj) {
             if (obj.event === 'add') {   // 监听添加操作
-                var content = miniPage.getHrefContent('addPage_announcement');
+                var content = miniPage.getHrefContent('addpage_announcement');
                 var openWH = miniPage.getOpenWidthHeight();
 
                 var index = layer.open({
-                    title: '添加用户',
+                    title: '添加公告',
                     type: 1,
                     shade: 0.2,
                     maxmin:true,
