@@ -1,7 +1,9 @@
 import json, hashlib
 from datetime import datetime
 from index.models import Mysession
-
+import numpy as np
+from sklearn.decomposition import FactorAnalysis
+from sklearn.preprocessing import MinMaxScaler
 
 def translateDateId2Date(date_id):
     if date_id == 1:
@@ -125,3 +127,25 @@ def hash_password(password, salt):
 
     # 返回哈希值
     return hashed_password
+
+
+def calculate_popularity(num, time, point, satisfaction, interaction):
+    # 定义评价指标
+    X = np.array([[num, time, point, satisfaction, interaction]])
+
+    # 数据预处理，归一化处理
+    scaler = MinMaxScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    # 因子分析，提取主成分
+    n_components = 4  # 设置提取的主成分数量
+    transformer = FactorAnalysis(n_components=n_components, random_state=0)
+    X_transformed = transformer.fit_transform(X_scaled)
+
+    # 定义各个维度的权重
+    weights = np.array([0.4, 0.2, 0.2, 0.1, 0.1])
+
+    # 计算综合评价分数
+    popularity = np.sum(X_transformed * weights) * 100
+
+    return popularity

@@ -35,22 +35,21 @@ def my_login(request):
 
         # 验证登陆信息是否完整
         user, user_id = check_login(phone_number, password, temp_type)
-        print(user, user_id)
 
         if user == 'student':
             obj = HttpResponse(user_id)
-            # # session 设置
-            # session_id = set_login_session(phone_number, 'student')
-            # obj.set_cookie("my_session_id", session_id)
+            # session 设置
+            session_id = set_login_session(phone_number, 'student')
+            obj.set_cookie("my_session_id", session_id)
             return obj
         elif user == 'teacher':
             obj = HttpResponse(user_id)
-            # # session 设置
-            # session_id = set_login_session(phone_number, 'teacher')
-            # obj.set_cookie("my_session_id", session_id)
+            # session 设置
+            session_id = set_login_session(phone_number, 'teacher')
+            obj.set_cookie("my_session_id", session_id)
             return obj
         else:
-            return HttpResponse("失败")
+            return HttpResponse("error")
 
     # return render(request, 'temp_登录页面')
     return HttpResponse("this is login")
