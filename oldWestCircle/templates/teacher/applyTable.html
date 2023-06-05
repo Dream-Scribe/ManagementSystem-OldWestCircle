@@ -39,17 +39,13 @@
         </fieldset>
 
         <script type="text/html" id="toolbarDemo">
-            <div class="layui-btn-container">
-                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
-                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>
-            </div>
         </script>
 
         <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
 
         <script type="text/html" id="currentTableBar">
-            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
-            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">同意</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">拒绝</a>
         </script>
 
     </div>
@@ -74,7 +70,9 @@
             }],
             cols: [[
                 {type: "checkbox", width: 50},
-                {field: 'student_name', width: 160, title: '学生姓名', sort: true},
+                {field: 'student_id', width: 160, title: '学生ID', sort: true},
+                {field: 'student_name', width: 160, title: '学生姓名'},
+                {field: 'teacher_id', width: 160, title: '教师ID'},
                 {field: 'teacher_name', width: 160, title: '教师姓名'},
                 {field: 'bookdescription', width: 160, title: '预约信息'},
                 {field: 'time', width: 160, title: '时间'},
@@ -106,62 +104,43 @@
             return false;
         });
 
-        /**
-         * toolbar事件监听
-         */
-        table.on('toolbar(currentTableFilter)', function (obj) {
-            if (obj.event === 'add') {   // 监听添加操作
-                var content = miniPage.getHrefContent('page/table/add.html');
-                var openWH = miniPage.getOpenWidthHeight();
-
-                var index = layer.open({
-                    title: '添加用户',
-                    type: 1,
-                    shade: 0.2,
-                    maxmin:true,
-                    shadeClose: true,
-                    area: [openWH[0] + 'px', openWH[1] + 'px'],
-                    offset: [openWH[2] + 'px', openWH[3] + 'px'],
-                    content: content,
-                });
-                $(window).on("resize", function () {
-                    layer.full(index);
-                });
-            } else if (obj.event === 'delete') {  // 监听删除操作
-                var checkStatus = table.checkStatus('currentTableId')
-                    , data = checkStatus.data;
-                layer.alert(JSON.stringify(data));
-            }
-        });
-
-        //监听表格复选框选择
-        table.on('checkbox(currentTableFilter)', function (obj) {
-            console.log(obj)
-        });
-
         table.on('tool(currentTableFilter)', function (obj) {
             var data = obj.data;
             if (obj.event === 'edit') {
+                $.ajax({
+                    url:'bookingExamine',
+                    type:"POST",
+                    data:{
+                        temp_sid:data.student_id,
+                        temp_tid:getCookie("user_id"),
+                        temp_choose:1
+                    },
+                    success:function(result){
 
-                var content = miniPage.getHrefContent('page/table/add.html');
-                var openWH = miniPage.getOpenWidthHeight();
-
-                var index = layer.open({
-                    title: '编辑用户',
-                    type: 1,
-                    shade: 0.2,
-                    maxmin:true,
-                    shadeClose: true,
-                    area: [openWH[0] + 'px', openWH[1] + 'px'],
-                    offset: [openWH[2] + 'px', openWH[3] + 'px'],
-                    content: content,
-                });
-                $(window).on("resize", function () {
-                    layer.full(index);
-                });
-                return false;
+                        alert(result);
+                    },
+                    error:function(e){
+                        alert(e);
+                    }
+                })
             } else if (obj.event === 'delete') {
                 layer.confirm('真的删除行么', function (index) {
+                    $.ajax({
+                        url:'bookingExamine',
+                        type:"POST",
+                        data:{
+                            temp_sid:data.student_id,
+                            temp_tid:getCookie("user_id"),
+                            temp_choose:0
+                        },
+                        success:function(result){
+
+                            alert(result);
+                        },
+                        error:function(e){
+                            alert(e);
+                        }
+                    })
                     obj.del();
                     layer.close(index);
                 });
