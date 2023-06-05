@@ -26,6 +26,8 @@ def addpage_user(request):
     return render(request,'admin/addpage_user.html')
 def addpageTest(request):
     return render(request,'admin/addpageTest.html')
+def admin_loginPage(request):
+    return render(request,'admin/adminLogin.html')
 
 
 
