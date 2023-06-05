@@ -65,7 +65,7 @@
         table.render({
             elem: '#currentTableId',
             method:'POST',
-            url: 'activity_show',
+            url: 'activityShow',
             toolbar: '#toolbarDemo',
             defaultToolbar: ['filter', 'exports', 'print', {
                 title: '提示',
@@ -128,11 +128,7 @@
                 $(window).on("resize", function () {
                     layer.full(index);
                 });
-            } else if (obj.event === 'delete') {  // 监听删除操作
-                var checkStatus = table.checkStatus('currentTableId')
-                    , data = checkStatus.data;
-                layer.alert(JSON.stringify(data));
-            }
+            } 
         });
 
         //监听表格复选框选择
@@ -162,8 +158,22 @@
                 });
                 return false;
             } else if (obj.event === 'delete') {
-                layer.confirm('真的删除行么', function (index) {
+                layer.confirm('真的要删除么', function (index) {
                     obj.del();
+                    $.ajax({
+                        type:"POST",
+                        url:"activity_cancel",
+                        data:{
+                            temp_activity_id:data.activity_id,
+                            temp_student_id:data.student_id
+                        },
+                        success:function(result){
+                            alert("删除成功")
+                        },
+                        error:function(e){
+                            console.log(e)
+                        }
+                    })
                     layer.close(index);
                 });
             }

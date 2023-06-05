@@ -77,7 +77,7 @@
 
             $.ajax({
                 type:"POST",
-                url:'publish_activity',
+                url:'activity',
                 data:data.field,
                 success:function(result){
                     var index = layer.alert(JSON.stringify(data.field), {

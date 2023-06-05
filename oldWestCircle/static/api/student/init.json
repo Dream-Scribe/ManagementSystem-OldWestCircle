@@ -32,7 +32,13 @@
               "href": "announcementTable_stu",
               "icon": "fa fa-list-alt",
               "target": "_self"
-            }
+            },
+            {
+              "title": "作业管理",
+              "href": "homework_stu",
+              "icon": "fa fa-list-alt",
+              "target": "_self"
+            }    
           ]
         },
         {
@@ -61,9 +67,7 @@
           "href": "teacherTable",
           "icon": "fa fa-window-maximize",
           "target": "_self"
-
         }
-
       ]
     }
   ]
