@@ -19,7 +19,7 @@ def activityTable(request):
 def announcementTable(request):
     return render(request,'admin/announcementTable.html')
 def addpage_activity(request):
-    return render(request,'admin/addpage_acvitity.html')
+    return render(request,'admin/addpage_activity.html')
 def addpage_announcement(request):
     return render(request,'admin/addpage_announcement.html')
 def addpage_user(request):

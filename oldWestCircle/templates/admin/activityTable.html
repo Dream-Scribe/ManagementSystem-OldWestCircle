@@ -63,10 +63,10 @@
             cols: [[
                 {type: "checkbox", width: 50},
                 {field: 'activity_id', width: 160, title: '活动ID', sort: true},
-                {field: 'activity_content', width: 160, title: '活动内容'},
-                {field: 'activity_start_time', width: 160, title: '开始时间'},
-                {field: 'activity_end_time', width: 160, title: '结束时间'},
-                {field: 'activity_place',width: 160, title: '活动地点'},
+                {field: 'content', width: 320, title: '活动内容'},
+                {field: 'start_time', width: 160, title: '开始时间'},
+                {field: 'end_time', width: 160, title: '结束时间'},
+                {field: 'place',width: 160, title: '活动地点'},
                 {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
             ]],
             limits: [10, 15, 20, 25, 50, 100],
@@ -150,8 +150,18 @@
                 });
                 return false;
             } else if (obj.event === 'delete') {
-                layer.confirm('真的删除行么', function (index) {
+                layer.confirm('真的删除活动么', function (index) {
                     obj.del();
+                    $.ajax({
+                        url:"activityDelete",
+                        type:"POST",
+                        data:{
+                            temp_id:data.activity_id
+                        },
+                        success:function(result){
+                            alert(result)
+                        }
+                    })
                     layer.close(index);
                 });
             }
